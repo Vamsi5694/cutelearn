@@ -1,0 +1,3168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Learn your ABCs</title>
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237ec8e3'/%3E%3Ctext x='16' y='23' font-family='system-ui,Segoe UI,sans-serif' font-size='17' font-weight='800' fill='%23ffffff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E"
+  />
+  <link
+    rel="apple-touch-icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%237ec8e3'/%3E%3Ctext x='90' y='118' font-family='system-ui,Segoe UI,sans-serif' font-size='96' font-weight='800' fill='%23ffffff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E"
+  />
+  <meta name="theme-color" content="#6ba8c5" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg1: #7ec8e3;
+      --bg2: #b8d4a8;
+      --card: #fff9f0;
+      --accent: #ff6b6b;
+      --text: #2d3436;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; min-height: 100%;
+      font-family: "Fredoka", system-ui, sans-serif;
+      background: #6ba8c5;
+      color: var(--text);
+      transition: background 0.5s ease;
+    }
+    #bgMesh { transition: background 0.5s ease, background-size 0.5s ease; }
+    /* ——— Full-screen background animation ——— */
+    .bg-scene {
+      position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+    }
+    .bg-mesh {
+      position: absolute; inset: -20%;
+      background:
+        linear-gradient(125deg, rgba(255,183,197,.55) 0%, transparent 45%),
+        linear-gradient(215deg, rgba(168,230,207,.6) 0%, transparent 50%),
+        linear-gradient(315deg, rgba(186,220,255,.55) 0%, transparent 45%),
+        linear-gradient(180deg, #7ec8e3 0%, #c4a8e8 35%, #ffe08a 70%, #98d4bb 100%);
+      background-size: 200% 200%;
+      animation: meshDrift 22s ease-in-out infinite;
+    }
+    @keyframes meshDrift {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      33% { transform: translate(3%, -2%) rotate(1deg) scale(1.03); }
+      66% { transform: translate(-2%, 3%) rotate(-0.8deg) scale(1.02); }
+    }
+    .blob {
+      position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.55; mix-blend-mode: soft-light;
+      animation: blobOrbit 28s ease-in-out infinite;
+    }
+    .blob.b1 { width: 45vmin; height: 45vmin; left: -8%; top: 10%; background: #ff9ecd; animation-delay: 0s; }
+    .blob.b2 { width: 38vmin; height: 38vmin; right: -5%; bottom: 15%; background: #7ee8c4; animation-delay: -9s; animation-duration: 24s; }
+    .blob.b3 { width: 32vmin; height: 32vmin; left: 35%; bottom: -10%; background: #ffd08a; animation-delay: -5s; animation-duration: 32s; }
+    @keyframes blobOrbit {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(12%, 8%) scale(1.05); }
+      50% { transform: translate(-6%, 14%) scale(0.95); }
+      75% { transform: translate(8%, -10%) scale(1.02); }
+    }
+    .stars {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.9), transparent),
+        radial-gradient(1.5px 1.5px at 85% 35%, rgba(255,255,255,.75), transparent),
+        radial-gradient(2px 2px at 45% 75%, rgba(255,255,255,.85), transparent),
+        radial-gradient(1.5px 1.5px at 70% 10%, rgba(255,255,255,.7), transparent),
+        radial-gradient(2px 2px at 25% 55%, rgba(255,255,255,.8), transparent),
+        radial-gradient(1.5px 1.5px at 92% 80%, rgba(255,255,255,.75), transparent);
+      background-size: 100% 100%;
+      animation: starTwinkle 4s ease-in-out infinite;
+    }
+    @keyframes starTwinkle {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .floaties {
+      position: absolute; inset: 0; overflow: hidden;
+    }
+    .floaty {
+      position: absolute; font-size: clamp(1.5rem, 4vw, 2.5rem);
+      opacity: 0.3; user-select: none; animation: floatY 20s ease-in-out infinite; color: #fff; text-shadow: 0 0 12px rgba(255,255,255,.5);
+    }
+    .floaty:nth-child(1) { left: 8%; top: 15%; }
+    .floaty:nth-child(2) { left: 80%; top: 25%; animation-delay: -4s; animation-duration: 17s; }
+    .floaty:nth-child(3) { left: 15%; top: 70%; animation-delay: -8s; animation-duration: 22s; }
+    .floaty:nth-child(4) { left: 75%; top: 65%; animation-delay: -2s; animation-duration: 19s; }
+    .floaty:nth-child(5) { left: 50%; top: 8%; animation-delay: -12s; animation-duration: 25s; }
+    /* Hidden element for OGV/WebM animal clips (Audio() cannot play many video containers). */
+    .animal-sfx-media {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      left: -100px;
+      top: 0;
+    }
+    @keyframes floatY {
+      0% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-15px) rotate(8deg); }
+      50% { transform: translateY(-8px) rotate(-5deg); }
+      75% { transform: translateY(-20px) rotate(6deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 60rem; margin: 0 auto; padding: 1rem 1.25rem 2rem; min-height: 100dvh; display: flex; flex-direction: column;
+    }
+    h1 {
+      text-align: center; font-size: clamp(1.75rem, 5vw, 2.6rem);
+      color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.12);
+      margin: 0.5rem 0 0.25rem; font-weight: 700;
+      animation: titleBounce 2.4s ease-in-out infinite;
+    }
+    @keyframes titleBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.02); }
+    }
+    p.sub { text-align: center; color: rgba(255,255,255,.9); font-size: clamp(0.95rem, 2.5vw, 1.1rem); margin: 0 0 1rem; }
+    p.sub .sub-mobile { display: none; }
+    .sound-line {
+      font-size: clamp(1.15rem, 3.4vw, 1.5rem);
+      font-weight: 600;
+      color: #7e57c2;
+      margin: 0.15rem 0 0;
+      letter-spacing: 0.02em;
+    }
+    .stage {
+      flex: 0 1 auto; display: flex; flex-direction: column; align-items: stretch; justify-content: center;
+      background: var(--card);
+      border-radius: 2rem; padding: 1.25rem 1.25rem 1.5rem; margin-bottom: 1rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,.1), 0 2px 0 rgba(255,255,255,.6) inset;
+      min-height: clamp(16rem, 38vh, 24rem);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      animation: stageBob 5s ease-in-out infinite;
+      transition: border-color 0.45s ease, box-shadow 0.45s ease;
+      border: 3px solid hsla(var(--kid-h, 12), 72%, 58%, 0.45);
+    }
+    .stage-inner {
+      display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; flex: 1; width: 100%; z-index: 1;
+    }
+    .stage-left {
+      flex: 0 0 auto; min-width: 42%;
+      text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .letter-wrap { width: 100%; display: flex; align-items: center; justify-content: center; }
+    .letter-wrap[hidden] {
+      display: none !important;
+    }
+    .color-panel { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.55rem; }
+    .color-panel[hidden],
+    #elColorPanel[hidden] {
+      display: none !important;
+    }
+    .color-swatch {
+      width: clamp(4.5rem, 22vmin, 8rem);
+      height: clamp(4.5rem, 22vmin, 8rem);
+      border-radius: 1.15rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12), inset 0 0 0 1px rgba(0,0,0,.08);
+    }
+    .color-swatch.is-light {
+      box-shadow: 0 6px 20px rgba(0,0,0,.1), inset 0 0 0 2px rgba(0,0,0,.2);
+    }
+    .color-name {
+      font-size: clamp(1.35rem, 4.5vw, 2rem);
+      font-weight: 800;
+      color: #2d3436; margin: 0;
+    }
+    .key.key-produce, .key.key-color { font-size: 1.1rem; }
+    .stage-right {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; min-width: 0; text-align: center;
+    }
+    .object-tilt {
+      display: flex; align-items: center; justify-content: center;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.1));
+      animation: objectWobble 4.5s ease-in-out infinite;
+      transform-origin: center center; will-change: transform;
+    }
+    @keyframes objectWobble {
+      0%, 100% { transform: rotate(-14deg) scale(1); }
+      33% { transform: rotate(6deg) scale(1.04); }
+      66% { transform: rotate(-4deg) scale(0.98); }
+    }
+    @media (max-width: 520px) {
+      .stage-inner { flex-direction: column; }
+      .stage-left { min-width: 100%; }
+    }
+    @keyframes stageBob {
+      0%, 100% { transform: translateY(0); box-shadow: 0 12px 40px rgba(0,0,0,.1), 0 2px 0 rgba(255,255,255,.6) inset; }
+      50% { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,.12), 0 2px 0 rgba(255,255,255,.6) inset; }
+    }
+    .stage::before {
+      content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,230,200,.4), transparent 70%);
+      pointer-events: none;
+    }
+    .letter {
+      font-size: clamp(5.5rem, 24vw, 12rem);
+      font-weight: 800; line-height: 0.95; color: var(--accent);
+      text-shadow: 4px 4px 0 #ffd5d5, 0 0 40px rgba(255, 107, 107, 0.25);
+      z-index: 1; transition: color 0.35s ease;
+    }
+    .emoji {
+      font-size: clamp(5rem, 20vw, 9rem);
+      line-height: 1; z-index: 1;
+    }
+    .emoji.counting-emoji {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.38rem 0;
+      max-width: 100%;
+      width: 100%;
+      min-height: 2.5rem;
+      line-height: 1;
+      padding: 0.4rem 0.35rem;
+      box-sizing: border-box;
+    }
+    .count-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem 0.55rem;
+      line-height: 1;
+    }
+    .count-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      line-height: 1;
+    }
+    .word {
+      font-size: clamp(2rem, 6.5vw, 3.2rem);
+      font-weight: 600; color: #5c6bc0; z-index: 1; line-height: 1.15;
+    }
+    .hint { font-size: clamp(0.85rem, 2.2vw, 1rem); color: #78909c; margin-top: 0.5rem; z-index: 1; text-align: center; }
+    /* pop-in animation */
+    .pop .letter { animation: popLetter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+    .object-pop { display: flex; align-items: center; justify-content: center; }
+    .pop .object-pop { animation: popEmoji 0.5s 0.08s cubic-bezier(0.34, 1.3, 0.64, 1) both; }
+    .pop .word { animation: popWord 0.45s 0.2s ease-out both; }
+    @keyframes popLetter {
+      0% { transform: scale(0) rotate(-12deg); opacity: 0; }
+      60% { transform: scale(1.1) rotate(3deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    @keyframes popEmoji {
+      0% { transform: scale(0) translateY(20px); opacity: 0; }
+      70% { transform: scale(1.08) translateY(0); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes popWord {
+      0% { transform: translateY(12px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pop .letter, .pop .object-pop, .pop .word { animation: none; }
+      h1, .stage, .object-tilt { animation: none; }
+      .object-tilt { transform: none; }
+      .bg-mesh, .blob, .stars, .floaty { animation: none !important; }
+      .key, .word-pick { transition: none; }
+      .bg-mesh { transform: none; }
+      .blob { transform: none; }
+    }
+    /* ——— Floating emojis in background (same object as key) ——— */
+    .bg-floats { position: absolute; inset: 0; overflow: hidden; z-index: 1; pointer-events: none; }
+    .bg-float-emoji {
+      position: absolute; left: 0; bottom: -12%; user-select: none; opacity: 0; font-style: normal;
+      will-change: transform, opacity;
+      --end-x: 8px; --end-rot: 24deg;
+    }
+    @keyframes bgDrift {
+      0% { opacity: 0; transform: translateY(0) translateX(0) rotate(-8deg) scale(0.55); }
+      10% { opacity: 0.5; }
+      90% { opacity: 0.4; }
+      100% { opacity: 0; transform: translateY(-120vh) translateX(var(--end-x, 0px)) rotate(var(--end-rot, 22deg)) scale(1.15); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bg-float-emoji { display: none; }
+    }
+    .abc-row {
+      display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center; max-width: 100%;
+      flex: 0 0 auto; width: 100%; min-height: 2.9rem;
+    }
+    .key {
+      width: 2.9rem; height: 2.9rem; border: none; border-radius: 0.55rem; cursor: pointer; font-size: 1.2rem; font-weight: 700; font-family: inherit;
+      background: #fff; color: #5c6bc0; box-shadow: 0 3px 0 #b0c4de, 0 4px 8px rgba(0,0,0,.08);
+      transition: transform 0.12s, box-shadow 0.12s, background 0.15s; touch-action: manipulation;
+    }
+    .key:hover { transform: translateY(-2px); background: #e8eaf6; }
+    .key:active { transform: translateY(1px); box-shadow: 0 1px 0 #b0c4de; }
+    .key[aria-pressed="true"] {
+      background: var(--accent); color: #fff; box-shadow: 0 2px 0 #c44;
+    }
+    .key.key-num {
+      font-size: 0.95rem; width: 2.35rem; height: 2.35rem; min-width: 2.1rem; padding: 0;
+    }
+    .word-picks {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: stretch;
+      width: 100%; max-width: 100%; margin: 0.75rem 0 0; padding: 0.5rem 0 0; border-top: 2px dashed rgba(100, 120, 200, 0.25);
+    }
+    .word-picks[hidden] { display: none !important; }
+    .word-pick {
+      flex: 1 1 auto; min-width: 7.5rem; max-width: 12rem; padding: 0.45rem 0.6rem; border: none; border-radius: 0.65rem; cursor: pointer;
+      font-size: clamp(0.8rem, 2.1vw, 0.95rem); font-weight: 600; font-family: inherit; line-height: 1.2;
+      background: #e8eaf6; color: #3f51b5; box-shadow: 0 2px 0 #9fa8da, 0 2px 6px rgba(0,0,0,.06);
+      transition: transform 0.12s, background 0.12s, box-shadow 0.12s; touch-action: manipulation; text-align: center;
+    }
+    .word-pick:hover { background: #c5cae9; transform: translateY(-1px); }
+    .word-pick:active { transform: translateY(0); box-shadow: 0 1px 0 #9fa8da; }
+    .word-pick[aria-pressed="true"] {
+      background: #5c6bc0; color: #fff; box-shadow: 0 2px 0 #3949ab, 0 2px 6px rgba(0,0,0,.1);
+    }
+    .auto-bar {
+      /* Stack above .stage (next sibling) so open dropdowns aren’t covered by the card */
+      position: relative;
+      z-index: 20;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.55rem 0.5rem;
+      margin: 0 0 0.9rem; padding: 0.65rem 1rem; background: rgba(255,255,255,.25); border-radius: 2rem; backdrop-filter: blur(6px);
+      row-gap: 0.55rem;
+    }
+    /* Mode: compact group — don’t span 100% width on phones (prevents huge gap before Voice) */
+    .auto-opts--mode {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-width: 0;
+      flex: 0 1 auto;
+      max-width: 100%;
+    }
+    .auto-opts--mode .kid-dd {
+      flex: 0 0 auto;
+      min-width: 0;
+      width: auto;
+      max-width: 100%;
+    }
+    @media (min-width: 641px) {
+      /* Laptop / desktop: Mode (full) · Voice · Play · Speed (full) — centered row */
+      .auto-bar {
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        gap: 0.55rem 0.65rem;
+      }
+      .auto-opts--mode {
+        flex: 0 1 auto;
+        max-width: none;
+        gap: 0.45rem;
+        align-items: center;
+        justify-content: center;
+      }
+      .auto-opts--mode .kid-dd {
+        flex: 0 1 auto;
+        min-width: min(9rem, 26vw);
+        max-width: min(14rem, 32vw);
+        width: auto;
+      }
+      .auto-opts--speed {
+        flex: 0 1 auto;
+        align-items: center;
+        justify-content: center;
+      }
+      .auto-opts--speed .kid-dd {
+        flex: 0 1 auto;
+        min-width: min(14rem, 38vw);
+        max-width: min(19.5rem, 46vw);
+      }
+      .auto-opts--mode .kid-dd__btn,
+      .auto-opts--speed .kid-dd__btn {
+        max-width: none;
+        width: 100%;
+      }
+      .auto-opts--mode .kid-dd__text,
+      .auto-opts--speed .kid-dd__text {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        line-height: 1.2;
+      }
+      .auto-bar .auto-status {
+        flex: 1 1 100%;
+        width: 100%;
+        text-align: center;
+      }
+    }
+    .auto-opts--speed {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-width: 0;
+      flex: 0 1 auto;
+    }
+    .auto-opts--speed .kid-dd {
+      min-width: 0;
+      max-width: 100%;
+    }
+    .btn-auto {
+      font-family: inherit; font-size: 1rem; font-weight: 600; border: none; cursor: pointer; padding: 0.5rem 1.1rem; border-radius: 1.2rem; touch-action: manipulation;
+      background: #fff; color: #5c6bc0; box-shadow: 0 3px 0 #90a4ae;
+    }
+    .btn-auto:hover { background: #e8eaf6; }
+    .btn-auto:active { transform: translateY(1px); box-shadow: 0 1px 0 #90a4ae; }
+    .btn-auto[aria-pressed="true"] { background: #26a69a; color: #fff; box-shadow: 0 3px 0 #00695c; }
+    .auto-status { color: #fff; font-size: 0.88rem; text-shadow: 0 1px 2px rgba(0,0,0,.15); }
+    .auto-opts {
+      display: flex; align-items: center; gap: 0.45rem; color: #fff; font-size: 0.85rem;
+    }
+    .auto-bar .btn-sound,
+    .auto-bar .btn-auto {
+      flex-shrink: 0;
+    }
+    .auto-opts label {
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+      flex-shrink: 0;
+    }
+    /* Custom <li> dropdowns: compact trigger + floating menu */
+    .kid-dd { position: relative; display: block; min-width: 0; }
+    .kid-dd__btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+      width: 100%;
+      max-width: 7.25rem;
+      margin: 0;
+      padding: 0.4rem 0.5rem 0.4rem 0.7rem;
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      color: #303f9f;
+      border-radius: 0.65rem;
+      border: 1.5px solid rgba(63, 81, 181, 0.38);
+      background: #f2f3fb;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 1px 2px rgba(20, 30, 60, 0.06);
+      cursor: pointer;
+      min-height: 2.25rem;
+      text-align: left;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+    @media (min-width: 641px) {
+      .kid-dd--speed .kid-dd__btn {
+        max-width: none;
+        padding-left: 0.7rem;
+        padding-right: 0.55rem;
+      }
+    }
+    .kid-dd__text {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .kid-dd__chev {
+      flex: 0 0 auto;
+      display: flex;
+      color: #5c6bc0;
+      transition: transform 0.2s ease;
+    }
+    .kid-dd--open .kid-dd__chev { transform: rotate(180deg); }
+    .kid-dd__btn:hover {
+      border-color: rgba(63, 81, 181, 0.55);
+      background: #fafaff;
+      box-shadow: inset 0 1px 0 #fff, 0 2px 6px rgba(20, 30, 60, 0.1);
+    }
+    .kid-dd__btn:focus { outline: none; }
+    .kid-dd__btn:focus-visible {
+      border-color: #5c6bc0;
+      box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+    .kid-dd__menu {
+      position: absolute;
+      z-index: 100;
+      left: 0;
+      top: calc(100% + 5px);
+      min-width: 100%;
+      width: max-content;
+      max-width: min(17rem, calc(100vw - 1.5rem));
+      margin: 0;
+      padding: 0.35rem;
+      list-style: none;
+      border-radius: 0.7rem;
+      background: #fff;
+      border: 1.5px solid rgba(63, 81, 181, 0.22);
+      box-shadow: 0 8px 28px rgba(20, 30, 80, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    .kid-dd__opt {
+      margin: 0;
+      padding: 0.5rem 0.7rem;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #37474f;
+      border-radius: 0.45rem;
+      cursor: pointer;
+      transition: background 0.1s ease, color 0.1s ease;
+    }
+    .kid-dd__opt:hover { background: #e8eaf6; color: #303f9f; }
+    .kid-dd__opt[aria-selected="true"] {
+      background: #e3e7f5;
+      color: #1a237e;
+    }
+    .btn-sound {
+      font-family: inherit; font-size: 0.95rem; font-weight: 600; border: none; cursor: pointer; padding: 0.5rem 0.9rem; border-radius: 1.2rem; touch-action: manipulation;
+      background: #fff; color: #5c6bc0; box-shadow: 0 3px 0 #90a4ae;
+    }
+    .btn-sound[aria-pressed="false"] { background: #eceff1; color: #78909c; }
+    .btn-sound .btn-ico { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
+    .btn-sound .ico-sound { width: 1.35em; height: 1.35em; flex-shrink: 0; }
+    .welcome-banner {
+      text-align: center; color: #fff; font-size: 0.95rem; margin: 0 0 0.5rem; padding: 0.5rem 0.8rem; border-radius: 1rem; background: rgba(255,255,255,.2);
+      animation: welcomeFade 0.8s ease;
+    }
+    @keyframes welcomeFade { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    /* Mobile toolbar: Mode (full label) → Speed (full label) → Voice | Play — equal gaps */
+    @media (max-width: 640px) {
+      .wrap { padding: 0.5rem 0.65rem 1.25rem; }
+      h1 { margin: 0.35rem 0 0.15rem; font-size: clamp(1.45rem, 5.5vw, 2rem); }
+      p.sub .sub-desktop { display: none; }
+      p.sub .sub-mobile { display: block; }
+      .auto-status { display: none; }
+      .auto-bar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 0.45rem;
+        row-gap: 0.4rem;
+        align-items: stretch;
+        justify-items: stretch;
+        margin-bottom: 0.55rem;
+        padding: 0.42rem 0.48rem;
+      }
+      .auto-bar > .auto-opts--mode {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        justify-content: space-between;
+        gap: 0.45rem;
+      }
+      .auto-bar > .auto-opts--speed {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        justify-content: space-between;
+        gap: 0.45rem;
+      }
+      .auto-bar > .btn-sound {
+        grid-column: 1;
+        grid-row: 3;
+        justify-self: stretch;
+        width: 100%;
+        max-width: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .auto-bar > .btn-auto {
+        grid-column: 2;
+        grid-row: 3;
+        justify-self: stretch;
+        width: 100%;
+        max-width: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .auto-opts--mode .kid-dd {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: none;
+      }
+      .auto-opts--speed .kid-dd {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: none;
+      }
+      .auto-opts--mode .kid-dd__btn,
+      .auto-opts--speed .kid-dd__btn {
+        max-width: none;
+        width: 100%;
+        min-height: 2.4rem;
+        align-items: center;
+      }
+      .auto-opts--mode .kid-dd__text,
+      .auto-opts--speed .kid-dd__text {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+      .btn-sound .btn-text,
+      .btn-auto .btn-text { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+      .btn-sound,
+      .btn-auto { position: relative; padding: 0.45rem 0.65rem; min-width: 0; }
+      .btn-sound .btn-ico,
+      .btn-auto .btn-ico { font-size: 1.15rem; line-height: 1; display: inline-block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-scene" aria-hidden="true">
+    <div class="bg-mesh" id="bgMesh" role="presentation"></div>
+    <div class="blob b1" role="presentation"></div>
+    <div class="blob b2" role="presentation"></div>
+    <div class="blob b3" role="presentation"></div>
+    <div class="stars" role="presentation"></div>
+    <div class="bg-floats" id="bgFloats" aria-hidden="true"></div>
+    <div class="floaties" role="presentation">
+      <span class="floaty">★</span>
+      <span class="floaty">✦</span>
+      <span class="floaty">☆</span>
+      <span class="floaty">✧</span>
+      <span class="floaty">✩</span>
+    </div>
+  </div>
+  <div class="wrap">
+    <h1>ABC for me</h1>
+    <p class="welcome-banner" id="welcomeBanner" hidden role="status">Welcome! Choose a letter, then tap a word. Or use the keyboard. You’re doing great! 🌟</p>
+    <p class="sub" id="elSub"><span class="sub-desktop">Pick a letter, then a word. Keyboard A–Z works too. Play = auto A–Z (first word each time).</span><span class="sub-mobile">Pick a letter, then a word.</span></p>
+    <div class="auto-bar" role="group" aria-label="Mode and auto play">
+      <div class="auto-opts auto-opts--mode">
+        <label id="modeSelectLabel" for="modeSelectBtn">Mode</label>
+        <div class="kid-dd kid-dd--mode" id="modeDdMode">
+          <input type="hidden" id="modeSelect" value="abc" />
+          <button
+            type="button"
+            id="modeSelectBtn"
+            class="kid-dd__btn"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-labelledby="modeSelectLabel"
+            aria-controls="modeSelectList"
+          >
+            <span class="kid-dd__text" id="modeSelectText">ABC (A–Z)</span>
+            <span class="kid-dd__chev" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <ul id="modeSelectList" class="kid-dd__menu" role="listbox" hidden>
+            <li role="option" data-value="abc" class="kid-dd__opt">ABC (A–Z)</li>
+            <li role="option" data-value="numbers" class="kid-dd__opt">Numbers (1–20)</li>
+            <li role="option" data-value="produce" class="kid-dd__opt">Fruits &amp; vegetables</li>
+            <li role="option" data-value="colors" class="kid-dd__opt">Colors</li>
+            <li role="option" data-value="animals" class="kid-dd__opt">Animals &amp; sounds</li>
+          </ul>
+        </div>
+      </div>
+      <button type="button" class="btn-sound" id="btnSound" aria-pressed="true" aria-label="Voice on" title="Turn voice on or off"><span class="btn-ico" aria-hidden="true"><svg class="ico-sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></span><span class="btn-text"> Voice on</span></button>
+      <button type="button" class="btn-auto" id="btnAuto" aria-pressed="false" aria-label="Play" title="Start or stop auto advance"><span class="btn-ico" aria-hidden="true">▶</span><span class="btn-text"> Play</span></button>
+      <div class="auto-opts auto-opts--speed">
+        <label id="autoSpeedLabel" for="autoSpeedBtn">Speed</label>
+        <div class="kid-dd kid-dd--speed" id="modeDdSpeed">
+          <input type="hidden" id="autoSpeed" value="3500" />
+          <button
+            type="button"
+            id="autoSpeedBtn"
+            class="kid-dd__btn"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-labelledby="autoSpeedLabel"
+            aria-controls="autoSpeedList"
+            aria-label="Time between each card"
+          >
+            <span class="kid-dd__text" id="autoSpeedText">Normal (3.5s)</span>
+            <span class="kid-dd__chev" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <ul id="autoSpeedList" class="kid-dd__menu" role="listbox" hidden>
+            <li role="option" data-value="5000" class="kid-dd__opt">Slow (5s)</li>
+            <li role="option" data-value="3500" class="kid-dd__opt">Normal (3.5s)</li>
+            <li role="option" data-value="2200" class="kid-dd__opt">Fast (2.2s)</li>
+          </ul>
+        </div>
+      </div>
+      <span class="auto-status" id="autoStatus">Auto: paused — press Play or choose a letter</span>
+    </div>
+    <div class="stage" id="stage" role="img" aria-live="polite" aria-atomic="true">
+      <div class="stage-inner">
+        <div class="stage-left">
+          <div class="letter-wrap" id="elLetterWrap">
+            <div class="letter" id="elLetter">A</div>
+          </div>
+          <div class="color-panel" id="elColorPanel" hidden>
+            <div
+              class="color-swatch"
+              id="elColorSwatch"
+              role="img"
+            ></div>
+            <p class="color-name" id="elColorName">Red</p>
+          </div>
+        </div>
+        <div class="stage-right">
+          <div class="object-pop">
+            <div class="object-tilt" aria-hidden="true">
+              <div class="emoji" id="elEmoji">🍎</div>
+            </div>
+          </div>
+          <div class="word" id="elWord">Apple</div>
+          <p class="sound-line" id="elSound" hidden>Says: roar</p>
+        </div>
+      </div>
+      <div class="hint" id="elHint">Next letter comes automatically — or choose your own</div>
+      <div
+        class="word-picks"
+        id="wordPicks"
+        role="group"
+        aria-label="Word or number examples"
+        hidden
+      ></div>
+    </div>
+    <div class="abc-row" id="abcRow" aria-label="alphabet"></div>
+  </div>
+  <script>
+    /**
+     * For each letter, { word, emoji } options (usually five; X has two). The
+     * first is the default (shown when you pick a letter, and used for auto advance).
+     */
+    const PAIRS = {
+      A: [
+        { word: "Apple", emoji: "🍎" },
+        { word: "Ant", emoji: "🐜" },
+        { word: "Airplane", emoji: "✈️" },
+        { word: "Arrow", emoji: "🏹" },
+        { word: "Alligator", emoji: "🐊" }
+      ],
+      B: [
+        { word: "Ball", emoji: "⚽" },
+        { word: "Bus", emoji: "🚌" },
+        { word: "Book", emoji: "📚" },
+        { word: "Baby", emoji: "👶" },
+        { word: "Bear", emoji: "🐻" }
+      ],
+      C: [
+        { word: "Cat", emoji: "🐱" },
+        { word: "Car", emoji: "🚗" },
+        { word: "Cup", emoji: "🥤" },
+        { word: "Cake", emoji: "🎂" },
+        { word: "Cloud", emoji: "☁️" }
+      ],
+      D: [
+        { word: "Dog", emoji: "🐶" },
+        { word: "Duck", emoji: "🦆" },
+        { word: "Door", emoji: "🚪" },
+        { word: "Dance", emoji: "💃" },
+        { word: "Drum", emoji: "🥁" }
+      ],
+      E: [
+        { word: "Eyes", emoji: "👀" },
+        { word: "Egg", emoji: "🥚" },
+        { word: "Elephant", emoji: "🐘" },
+        { word: "Ear", emoji: "👂" },
+        { word: "Eagle", emoji: "🦅" }
+      ],
+      F: [
+        { word: "Fish", emoji: "🐟" },
+        { word: "Fox", emoji: "🦊" },
+        { word: "Fork", emoji: "🍴" },
+        { word: "Flower", emoji: "🌸" },
+        { word: "Fire", emoji: "🔥" }
+      ],
+      G: [
+        { word: "Glass", emoji: "🥛" },
+        { word: "Giraffe", emoji: "🦒" },
+        { word: "Gift", emoji: "🎁" },
+        { word: "Guitar", emoji: "🎸" },
+        { word: "Girl", emoji: "👧" }
+      ],
+      H: [
+        { word: "Hand", emoji: "✋" },
+        { word: "Heart", emoji: "❤️" },
+        { word: "House", emoji: "🏠" },
+        { word: "Hat", emoji: "🎩" },
+        { word: "Horse", emoji: "🐴" }
+      ],
+      I: [
+        { word: "Ice cream", emoji: "🍦" },
+        { word: "Ice", emoji: "🧊" },
+        { word: "Insect", emoji: "🐛" },
+        { word: "Island", emoji: "🏝️" },
+        { word: "Injection", emoji: "💉" }
+      ],
+      J: [
+        { word: "Juice", emoji: "🧃" },
+        { word: "Jar", emoji: "🫙" },
+        { word: "Jet", emoji: "🛩️" },
+        { word: "Jacket", emoji: "🧥" },
+        { word: "Jeep", emoji: "🚙" }
+      ],
+      K: [
+        { word: "Kite", emoji: "🪁" },
+        { word: "Key", emoji: "🗝️" },
+        { word: "King", emoji: "🤴" },
+        { word: "Kangaroo", emoji: "🦘" },
+        { word: "Kiwi", emoji: "🥝" }
+      ],
+      L: [
+        { word: "Lorry", emoji: "🚛" },
+        { word: "Lion", emoji: "🦁" },
+        { word: "Leaf", emoji: "🍃" },
+        { word: "Lamp", emoji: "💡" },
+        { word: "Lollipop", emoji: "🍭" }
+      ],
+      M: [
+        { word: "Monkey", emoji: "🐒" },
+        { word: "Moon", emoji: "🌙" },
+        { word: "Mouse", emoji: "🐭" },
+        { word: "Milk", emoji: "🥛" },
+        { word: "Mountain", emoji: "⛰️" }
+      ],
+      N: [
+        { word: "Nose", emoji: "👃" },
+        { word: "Nest", emoji: "🪺" },
+        { word: "Noodles", emoji: "🍜" },
+        { word: "Night", emoji: "🌃" },
+        { word: "Net", emoji: "🥅" }
+      ],
+      O: [
+        { word: "Orange", emoji: "🍊" },
+        { word: "Octopus", emoji: "🐙" },
+        { word: "Owl", emoji: "🦉" },
+        { word: "Ocean", emoji: "🌊" },
+        { word: "Onion", emoji: "🧅" }
+      ],
+      P: [
+        { word: "Plant", emoji: "🪴" },
+        { word: "Pizza", emoji: "🍕" },
+        { word: "Parrot", emoji: "🦜" },
+        { word: "Puppy", emoji: "🐕" },
+        { word: "Paint", emoji: "🎨" }
+      ],
+      Q: [
+        { word: "Queen", emoji: "👑" },
+        { word: "Quail", emoji: "🐦" },
+        { word: "Quilt", emoji: "🧵" },
+        { word: "Quarter", emoji: "🪙" },
+        { word: "Quesadilla", emoji: "🌮" }
+      ],
+      R: [
+        { word: "Rain", emoji: "🌧️" },
+        { word: "Rose", emoji: "🌹" },
+        { word: "Ring", emoji: "💍" },
+        { word: "Rainbow", emoji: "🌈" },
+        { word: "Robot", emoji: "🤖" }
+      ],
+      S: [
+        { word: "Sun", emoji: "☀️" },
+        { word: "Star", emoji: "⭐" },
+        { word: "Snake", emoji: "🐍" },
+        { word: "Ship", emoji: "⛵" },
+        { word: "Sing", emoji: "🎤" }
+      ],
+      T: [
+        { word: "Tree", emoji: "🌳" },
+        { word: "Tiger", emoji: "🐯" },
+        { word: "Train", emoji: "🚂" },
+        { word: "Time", emoji: "⏰" },
+        { word: "Turtle", emoji: "🐢" }
+      ],
+      U: [
+        { word: "Umbrella", emoji: "☂️" },
+        { word: "Unicorn", emoji: "🦄" },
+        { word: "Uniform", emoji: "🥼" },
+        { word: "Ukulele", emoji: "🪕" },
+        { word: "Unicycle", emoji: "🚲" }
+      ],
+      V: [
+        { word: "Vegetables", emoji: "🥕" },
+        { word: "Van", emoji: "🚐" },
+        { word: "Volcano", emoji: "🌋" },
+        { word: "Violin", emoji: "🎻" },
+        { word: "Vase", emoji: "🏺" }
+      ],
+      W: [
+        { word: "Water", emoji: "💧" },
+        { word: "Whale", emoji: "🐋" },
+        { word: "Wand", emoji: "🪄" },
+        { word: "Wind", emoji: "💨" },
+        { word: "Web", emoji: "🕸️" }
+      ],
+      X: [
+        { word: "Xylophone", emoji: "🎹" },
+        { word: "X-ray", emoji: "🦴" }
+      ],
+      Y: [
+        { word: "Yo-yo", emoji: "🪀" },
+        { word: "Yarn", emoji: "🧶" },
+        { word: "Yellow", emoji: "🟡" },
+        { word: "Yak", emoji: "🦬" },
+        { word: "Yogurt", emoji: "🥛" }
+      ],
+      Z: [
+        { word: "Zebra", emoji: "🦓" },
+        { word: "Zoo", emoji: "🦒" },
+        { word: "Zipper", emoji: "🤐" },
+        { word: "Zigzag", emoji: "⚡" },
+        { word: "Zero", emoji: "0️⃣" }
+      ]
+    };
+
+    /** Spoken when introducing an example: "One! …" then the phrase. */
+    const NUMBER_NAMES = [
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine",
+      "Ten",
+      "Eleven",
+      "Twelve",
+      "Thirteen",
+      "Fourteen",
+      "Fifteen",
+      "Sixteen",
+      "Seventeen",
+      "Eighteen",
+      "Nineteen",
+      "Twenty"
+    ];
+    /**
+     * For each number 1–20, a different “unit” emoji (index 0 = number 1, …).
+     * The screen shows n copies in a wrap grid (not one long line) so it’s easy to count.
+     */
+    const NUM_UNIT_EMOJIS = [
+      "🎈",
+      "⭐",
+      "🍎",
+      "🦆",
+      "🌸",
+      "🐸",
+      "⚽",
+      "🍪",
+      "🌹",
+      "🚗",
+      "🦋",
+      "🍊",
+      "🐠",
+      "☂️",
+      "🥁",
+      "🐝",
+      "🌻",
+      "🎪",
+      "🦄",
+      "🎁"
+    ];
+    /** Simple labels for screen readers (after the number): “3 apples to count”. */
+    const NUM_UNIT_LABELS = [
+      "balloon",
+      "star",
+      "apple",
+      "duck",
+      "flower",
+      "frog",
+      "ball",
+      "cookie",
+      "rose",
+      "car",
+      "butterfly",
+      "orange",
+      "fish",
+      "umbrella",
+      "drum",
+      "bee",
+      "sunflower",
+      "tent",
+      "unicorn",
+      "present"
+    ];
+    function getNumberUnitEmoji(nIndex) {
+      if (nIndex < 0 || nIndex >= NUM_UNIT_EMOJIS.length) {
+        return "🎈";
+      }
+      return NUM_UNIT_EMOJIS[nIndex];
+    }
+    /**
+     * How many emojis per row (top → bottom) for each count 1–20.
+     * Examples: 3 → [1,2]; 6 → [1,2,3]; 7 → [2,3,2]; 11 → [3,5,3]; 20 → four rows of 5.
+     */
+    const COUNT_ROW_LAYOUTS = [
+      [1],
+      [1, 1],
+      [1, 2],
+      [2, 2],
+      [2, 3],
+      [1, 2, 3],
+      [2, 3, 2],
+      [3, 2, 3],
+      [3, 3, 3],
+      [5, 5],
+      [3, 5, 3],
+      [4, 4, 4],
+      [1, 3, 5, 3, 1],
+      [5, 4, 5],
+      [5, 5, 5],
+      [4, 4, 4, 4],
+      [5, 7, 5],
+      [6, 6, 6],
+      [5, 5, 5, 4],
+      [5, 5, 5, 5]
+    ];
+    function getCountingRowSizes(count) {
+      const n = Math.max(1, Math.min(20, count | 0));
+      const plan = COUNT_ROW_LAYOUTS[n - 1];
+      let sum = 0;
+      for (let i = 0; i < plan.length; i++) {
+        sum += plan[i];
+      }
+      if (sum !== n) {
+        return [n];
+      }
+      return plan;
+    }
+    function setCountingEmojiSize(num) {
+      if (!elEmoji) {
+        return;
+      }
+      if (num <= 3) {
+        elEmoji.style.fontSize = "clamp(2.4rem, 9vmin, 4.2rem)";
+      } else if (num <= 6) {
+        elEmoji.style.fontSize = "clamp(1.7rem, 6.5vmin, 2.8rem)";
+      } else if (num <= 10) {
+        elEmoji.style.fontSize = "clamp(1.15rem, 4.2vmin, 1.9rem)";
+      } else {
+        elEmoji.style.fontSize = "clamp(0.72rem, 2.6vmin, 1.25rem)";
+      }
+    }
+    function buildCountingEmojiGrid(nIndex, count) {
+      if (!elEmoji) {
+        return;
+      }
+      const n = Math.max(1, Math.min(20, count | 0));
+      const unit = getNumberUnitEmoji(nIndex);
+      const label = NUM_UNIT_LABELS[nIndex] || "picture";
+      const rows = getCountingRowSizes(n);
+      elEmoji.textContent = "";
+      let shown = 0;
+      for (let r = 0; r < rows.length; r++) {
+        const rowEl = document.createElement("div");
+        rowEl.className = "count-row";
+        for (let c = 0; c < rows[r]; c++) {
+          if (shown >= n) {
+            break;
+          }
+          const cell = document.createElement("span");
+          cell.className = "count-cell";
+          cell.textContent = unit;
+          cell.setAttribute("aria-hidden", "true");
+          rowEl.appendChild(cell);
+          shown += 1;
+        }
+        elEmoji.appendChild(rowEl);
+      }
+      const plural = n === 1 ? "" : "s";
+      elEmoji.setAttribute("role", "img");
+      elEmoji.setAttribute(
+        "aria-label",
+        n + " " + label + plural + " — count each one"
+      );
+    }
+    function resetEmojiToNormal() {
+      if (!elEmoji) {
+        return;
+      }
+      elEmoji.textContent = "";
+      elEmoji.removeAttribute("role");
+      elEmoji.removeAttribute("aria-label");
+      elEmoji.className = "emoji";
+      elEmoji.style.removeProperty("font-size");
+    }
+
+    /**
+     * name, emoji, onomatopoeia (TTS when no `clip` or after the name with `clip`).
+     * `clip` = optional Wikimedia Commons recording; the voice says the name, then the clip plays.
+     * `sfxVolume` = optional 0–1 playback level for the clip (Sheep defaults to full in code).
+     */
+    const ANIMALS = [
+      {
+        name: "Lion",
+        emoji: "🦁",
+        sound: "roar",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg"
+      },
+      {
+        name: "Tiger",
+        emoji: "🐯",
+        sound: "roar",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg"
+      },
+      {
+        name: "Elephant",
+        emoji: "🐘",
+        sound: "trumpet",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/4/40/Elephant_voice_-_trumpeting.ogg"
+      },
+      {
+        name: "Dog",
+        emoji: "🐕",
+        sound: "woof",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg"
+      },
+      { name: "Cat", emoji: "🐱", sound: "meow", clip: "https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg" },
+      { name: "Cow", emoji: "🐮", sound: "moo", clip: "https://upload.wikimedia.org/wikipedia/commons/4/48/Mudchute_cow_1.ogg" },
+      { name: "Pig", emoji: "🐷", sound: "oink", clip: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mudchute_pig_2.ogg" },
+      { name: "Horse", emoji: "🐴", sound: "neigh", clip: "https://upload.wikimedia.org/wikipedia/commons/d/db/Wiehern.ogg" },
+      {
+        name: "Sheep",
+        emoji: "🐑",
+        sound: "baa",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/2/28/Sheep_bleat.ogg",
+        sfxVolume: 1
+      },
+      { name: "Goat", emoji: "🐐", sound: "bleat", clip: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Herd_of_goats_bleating.ogg" },
+      {
+        name: "Duck",
+        emoji: "🦆",
+        sound: "quack",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/6/69/Anas_platyrhynchos_-_Mallard_-_XC112828.ogg"
+      },
+      {
+        name: "Hen",
+        emoji: "🐓",
+        sound: "cluck",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Rooster_crowing_small.ogv"
+      },
+      { name: "Chick", emoji: "🐤", sound: "peep" },
+      {
+        name: "Frog",
+        emoji: "🐸",
+        sound: "ribbit",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/2/22/Hyla_arborea_%28HS%29.ogg"
+      },
+      {
+        name: "Owl",
+        emoji: "🦉",
+        sound: "hoot",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Cape_Eagle_Owl_%28Bubo_capensis%29_%28W1CDR0001437_BD2%29.ogg"
+      },
+      { name: "Eagle", emoji: "🦅", sound: "screech" },
+      {
+        name: "Parrot",
+        emoji: "🦜",
+        sound: "squawk",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Aufgeregte_Katharinasittiche.ogg"
+      },
+      {
+        name: "Penguin",
+        emoji: "🐧",
+        sound: "chatter",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/2/2c/Little_Penguin_%28Eudyptula_minor%29.ogg"
+      },
+      {
+        name: "Flamingo",
+        emoji: "🦩",
+        sound: "honk",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/2/2d/Phoenicopterus_roseus_%28Rosaflamingo_-_Greater_Flamingo%29_%E2%80%94_Weltvogelpark_Walsrode_2013.ogg"
+      },
+      {
+        name: "Peacock",
+        emoji: "🦚",
+        sound: "scream",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Indian_Peafowl.ogg"
+      },
+      {
+        name: "Crow",
+        emoji: "🐦‍⬛",
+        sound: "caw",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Carrion_Crow_%28Corvus_corone%29_%28W1CDR0001425_BD18%29.ogg"
+      },
+      {
+        name: "Pigeon",
+        emoji: "🕊️",
+        sound: "coo",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/0/08/20200321_125634_Pigeons.ogg"
+      },
+      {
+        name: "Sparrow",
+        emoji: "🐦",
+        sound: "chirp",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/0/01/House_Sparrow.ogg"
+      },
+      { name: "Buffalo", emoji: "🐃", sound: "bellow" },
+      { name: "Bear", emoji: "🐻", sound: "growl", clip: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Bear_growl.ogg" },
+      { name: "Panda", emoji: "🐼", sound: "chirp" },
+      { name: "Wolf", emoji: "🐺", sound: "howl", clip: "https://upload.wikimedia.org/wikipedia/commons/8/87/Wolf_howls.ogg" },
+      {
+        name: "Fox",
+        emoji: "🦊",
+        sound: "bark",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/7/79/Red_Fox_%28Vulpes_vulpes%29_%28W1CDR0001529_BD12%29.ogg"
+      },
+      { name: "Rabbit", emoji: "🐰", sound: "squeak" },
+      { name: "Mouse", emoji: "🐭", sound: "squeak" },
+      { name: "Monkey", emoji: "🐵", sound: "call" },
+      { name: "Gorilla", emoji: "🦍", sound: "grunt" },
+      { name: "Snake", emoji: "🐍", sound: "rattle", clip: "https://upload.wikimedia.org/wikipedia/commons/2/22/Rattlesnake.ogg" },
+      { name: "Crocodile", emoji: "🐊", sound: "bellow" },
+      { name: "Turtle", emoji: "🐢", sound: "swish" },
+      {
+        name: "Dolphin",
+        emoji: "🐬",
+        sound: "clicks",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/7/79/Killer_whale.ogg"
+      },
+      {
+        name: "Whale",
+        emoji: "🐋",
+        sound: "song",
+        clip: "https://upload.wikimedia.org/wikipedia/commons/7/79/Killer_whale.ogg"
+      },
+      { name: "Seal", emoji: "🦭", sound: "bark" },
+      { name: "Shark", emoji: "🦈", sound: "splash" },
+      { name: "Octopus", emoji: "🐙", sound: "puff", clip: "https://upload.wikimedia.org/wikipedia/commons/1/14/Octopus.ogv" },
+      { name: "Crab", emoji: "🦀", sound: "tap" },
+      { name: "Bee", emoji: "🐝", sound: "buzz" },
+      { name: "Butterfly", emoji: "🦋", sound: "flutter" },
+      { name: "Hippo", emoji: "🦛", sound: "grunt" },
+      { name: "Rhino", emoji: "🦏", sound: "snort" },
+      { name: "Giraffe", emoji: "🦒", sound: "hum" },
+      { name: "Zebra", emoji: "🦓", sound: "whinny" },
+      { name: "Camel", emoji: "🐪", sound: "grunt" },
+      { name: "Kangaroo", emoji: "🦘", sound: "thump" },
+      { name: "Koala", emoji: "🐨", sound: "bellow", clip: "https://upload.wikimedia.org/wikipedia/commons/2/23/Koala.ogv" },
+      { name: "Sloth", emoji: "🦥", sound: "hum" }
+    ];
+
+    /** Fruits & vegetables: tap to learn the name. */
+    const PRODUCE = [
+      { name: "Apple", emoji: "🍎" },
+      { name: "Banana", emoji: "🍌" },
+      { name: "Orange", emoji: "🍊" },
+      { name: "Grapes", emoji: "🍇" },
+      { name: "Strawberry", emoji: "🍓" },
+      { name: "Watermelon", emoji: "🍉" },
+      { name: "Cherry", emoji: "🍒" },
+      { name: "Peach", emoji: "🍑" },
+      { name: "Pear", emoji: "🍐" },
+      { name: "Pineapple", emoji: "🍍" },
+      { name: "Avocado", emoji: "🥑" },
+      { name: "Lemon", emoji: "🍋" },
+      { name: "Mango", emoji: "🥭" },
+      { name: "Coconut", emoji: "🥥" },
+      { name: "Kiwi", emoji: "🥝" },
+      { name: "Melon", emoji: "🍈" },
+      { name: "Blueberries", emoji: "🫐" },
+      { name: "Carrot", emoji: "🥕" },
+      { name: "Broccoli", emoji: "🥦" },
+      { name: "Corn", emoji: "🌽" },
+      { name: "Tomato", emoji: "🍅" },
+      { name: "Potato", emoji: "🥔" },
+      { name: "Sweet potato", emoji: "🍠" },
+      { name: "Onion", emoji: "🧅" },
+      { name: "Garlic", emoji: "🧄" },
+      { name: "Ginger", emoji: "🫚" },
+      { name: "Pepper", emoji: "🫑" },
+      { name: "Chillies", emoji: "🌶️" },
+      { name: "Cucumber", emoji: "🥒" },
+      { name: "Eggplant", emoji: "🍆" },
+      { name: "Spinach", emoji: "🥬" },
+      { name: "Peas", emoji: "🫛" },
+      { name: "Beans", emoji: "🫘" },
+      { name: "Mushroom", emoji: "🍄" },
+      { name: "Peanuts", emoji: "🥜" }
+    ];
+    /**
+     * Colors: left = color name + swatch, right = example object.
+     * `object` = spoken / shown as the example thing in that color.
+     */
+    const COLORS = [
+      { name: "Red", hex: "#e53935", object: "Rose", emoji: "🌹" },
+      { name: "Orange", hex: "#fb8c00", object: "Orange", emoji: "🍊" },
+      { name: "Yellow", hex: "#fdd835", object: "Sunflower", emoji: "🌻" },
+      { name: "Green", hex: "#43a047", object: "Broccoli", emoji: "🥦" },
+      { name: "Blue", hex: "#1e88e5", object: "Butterfly", emoji: "🦋" },
+      { name: "Purple", hex: "#8e24aa", object: "Grapes", emoji: "🍇" },
+      { name: "Pink", hex: "#f48fb1", object: "Flower", emoji: "🌸" },
+      { name: "Brown", hex: "#6d4c41", object: "Bear", emoji: "🐻" },
+      { name: "Black", hex: "#212121", object: "Cat", emoji: "🐈‍⬛" },
+      { name: "White", hex: "#f5f5f5", object: "Milk", emoji: "🥛" },
+      { name: "Gray", hex: "#90a4ae", object: "Elephant", emoji: "🐘" }
+    ];
+
+    const stage = document.getElementById("stage");
+    const elLetter = document.getElementById("elLetter");
+    const elLetterWrap = document.getElementById("elLetterWrap");
+    const elColorPanel = document.getElementById("elColorPanel");
+    const elColorSwatch = document.getElementById("elColorSwatch");
+    const elColorName = document.getElementById("elColorName");
+    const elEmoji = document.getElementById("elEmoji");
+    const elWord = document.getElementById("elWord");
+    const elHint = document.getElementById("elHint");
+    const abcRow = document.getElementById("abcRow");
+    const btnAuto = document.getElementById("btnAuto");
+    const autoStatus = document.getElementById("autoStatus");
+    const autoSpeed = document.getElementById("autoSpeed");
+    const bgFloats = document.getElementById("bgFloats");
+    const btnSound = document.getElementById("btnSound");
+    const welcomeBanner = document.getElementById("welcomeBanner");
+    const elSub = document.getElementById("elSub");
+    const elSound = document.getElementById("elSound");
+    const wordPicks = document.getElementById("wordPicks");
+    const modeSelect = document.getElementById("modeSelect");
+    const STORAGE_SOUND = "kidsAbcSoundOn";
+    const STORAGE_WELCOME = "kidsAbcSawWelcome";
+    const STORAGE_MODE = "kidsAbcMode";
+
+    const PRAISES = [
+      "Yay! ",
+      "Super! ",
+      "Nice pick! ",
+      "You found it! ",
+      "So smart! "
+    ];
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    /** `speechSynthesis` rate: 0.1–10, default 1. Slower = easier for kids to follow. */
+    const KID_SPEECH_RATE = 0.52;
+
+    function normalizeMode(v) {
+      const s = String(v == null ? "" : v)
+        .trim()
+        .toLowerCase();
+      if (s === "animals") {
+        return "animals";
+      }
+      if (s === "numbers") {
+        return "numbers";
+      }
+      if (s === "produce") {
+        return "produce";
+      }
+      if (s === "colors") {
+        return "colors";
+      }
+      return "abc";
+    }
+
+    const MODE_DD_FULL = {
+      abc: "ABC (A–Z)",
+      numbers: "Numbers (1–20)",
+      produce: "Fruits & vegetables",
+      colors: "Colors",
+      animals: "Animals & sounds"
+    };
+    const SPEED_DD_FULL = {
+      "5000": "Slow (5s)",
+      "3500": "Normal (3.5s)",
+      "2200": "Fast (2.2s)"
+    };
+
+    function closeAllKidDropdowns() {
+      document.querySelectorAll(".kid-dd--open").forEach((dd) => {
+        const list = dd.querySelector(".kid-dd__menu");
+        const btn = dd.querySelector(".kid-dd__btn");
+        if (list) {
+          list.hidden = true;
+        }
+        if (btn) {
+          btn.setAttribute("aria-expanded", "false");
+        }
+        dd.classList.remove("kid-dd--open");
+      });
+    }
+
+    function syncModeSelectFromInput() {
+      const inp = document.getElementById("modeSelect");
+      const text = document.getElementById("modeSelectText");
+      const list = document.getElementById("modeSelectList");
+      if (!inp || !text) {
+        return;
+      }
+      const m = normalizeMode(inp.value);
+      inp.value = m;
+      text.textContent = MODE_DD_FULL[m] || m;
+      if (list) {
+        list.querySelectorAll('[role="option"]').forEach((li) => {
+          li.setAttribute("aria-selected", li.dataset.value === m ? "true" : "false");
+        });
+      }
+    }
+
+    function syncSpeedSelectFromInput() {
+      const inp = document.getElementById("autoSpeed");
+      const text = document.getElementById("autoSpeedText");
+      const list = document.getElementById("autoSpeedList");
+      if (!inp || !text) {
+        return;
+      }
+      let v = String(inp.value || "3500");
+      if (!SPEED_DD_FULL[v]) {
+        v = "3500";
+        inp.value = v;
+      }
+      text.textContent = SPEED_DD_FULL[v] || v;
+      if (list) {
+        list.querySelectorAll('[role="option"]').forEach((li) => {
+          li.setAttribute("aria-selected", li.dataset.value === v ? "true" : "false");
+        });
+      }
+    }
+
+    function initKidDropdowns() {
+      document.querySelectorAll(".kid-dd").forEach((dd) => {
+        dd.addEventListener("click", (e) => e.stopPropagation());
+      });
+      document.addEventListener("click", closeAllKidDropdowns);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeAllKidDropdowns();
+        }
+      });
+
+      document.querySelectorAll(".kid-dd__btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const dd = btn.closest(".kid-dd");
+          if (!dd) {
+            return;
+          }
+          const list = dd.querySelector(".kid-dd__menu");
+          if (!list) {
+            return;
+          }
+          const wasHidden = list.hidden;
+          closeAllKidDropdowns();
+          if (wasHidden) {
+            list.hidden = false;
+            btn.setAttribute("aria-expanded", "true");
+            dd.classList.add("kid-dd--open");
+          }
+        });
+      });
+
+      const modeList = document.getElementById("modeSelectList");
+      const modeInp = document.getElementById("modeSelect");
+      if (modeList && modeInp) {
+        modeList.addEventListener("click", (e) => {
+          const li = e.target.closest('li[role="option"]');
+          if (!li) {
+            return;
+          }
+          modeInp.value = li.dataset.value;
+          modeInp.dispatchEvent(new Event("change", { bubbles: true }));
+          syncModeSelectFromInput();
+          closeAllKidDropdowns();
+        });
+      }
+
+      const speedList = document.getElementById("autoSpeedList");
+      const speedInp = document.getElementById("autoSpeed");
+      if (speedList && speedInp) {
+        speedList.addEventListener("click", (e) => {
+          const li = e.target.closest('li[role="option"]');
+          if (!li) {
+            return;
+          }
+          speedInp.value = li.dataset.value;
+          speedInp.dispatchEvent(new Event("change", { bubbles: true }));
+          syncSpeedSelectFromInput();
+          closeAllKidDropdowns();
+        });
+      }
+    }
+
+    function getStoredMode() {
+      try {
+        return normalizeMode(localStorage.getItem(STORAGE_MODE));
+      } catch (_) {
+        return "abc";
+      }
+    }
+
+    let currentMode = getStoredMode();
+    let currentAnimalIndex = 0;
+    let currentNumberIndex = 0;
+    let currentProduceIndex = 0;
+    let currentColorIndex = 0;
+    let keys = [];
+    let keyByLetter = new Map();
+    let keyByNumberIndex = new Map();
+
+    function updateSubline() {
+      if (!elSub) {
+        return;
+      }
+      if (currentMode === "abc") {
+        elSub.innerHTML =
+          '<span class="sub-desktop">Pick a letter, then a word. Keyboard A–Z works too. Play = auto A–Z (first word each time).</span>' +
+          '<span class="sub-mobile">Pick a letter, then a word.</span>';
+      } else if (currentMode === "numbers") {
+        elSub.innerHTML =
+          '<span class="sub-desktop">Each number has its own picture — see that many in a group. Count them! 1–9, 0=10, or ← →. Play 1–20.</span>' +
+          '<span class="sub-mobile">Each number has its own picture — see that many in a group. Count them! Play 1–20.</span>';
+      } else if (currentMode === "produce") {
+        elSub.innerHTML =
+          '<span class="sub-desktop">Fruits and vegetables — tap a picture or use Play. ← → to move. Hear each name.</span>' +
+          '<span class="sub-mobile">Fruits and vegetables — tap a picture. Hear each name.</span>';
+      } else if (currentMode === "colors") {
+        elSub.innerHTML =
+          '<span class="sub-desktop">The color and its name are on the left; an example in that color is on the right. ← → or Play.</span>' +
+          '<span class="sub-mobile">The color and its name are on the left; an example in that color is on the right.</span>';
+      } else {
+        elSub.innerHTML =
+          '<span class="sub-desktop">Tap an animal, or use the ← → keys. Press Play to go through each one with the voice.<br> A few animals have a real sound recording</span>' +
+          '<span class="sub-mobile">Tap an animal. Press Play to go through each one with the voice.<br> A few animals have a real sound recording</span>';
+      }
+    }
+
+    function buildKeyRow() {
+      if (!abcRow) {
+        return;
+      }
+      abcRow.innerHTML = "";
+      if (currentMode === "animals") {
+        ANIMALS.forEach((a, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "key key-animal";
+          b.textContent = a.emoji;
+          b.setAttribute("aria-pressed", "false");
+          b.setAttribute("aria-label", a.name);
+          b.title = a.name;
+          b.addEventListener("click", () => {
+            manualStopAuto();
+            showAnimal(i, b, { manual: true, speak: true });
+          });
+          abcRow.appendChild(b);
+        });
+        abcRow.setAttribute("aria-label", "Animals");
+        keyByNumberIndex = new Map();
+      } else if (currentMode === "produce") {
+        PRODUCE.forEach((p, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "key key-produce";
+          b.textContent = p.emoji;
+          b.setAttribute("aria-pressed", "false");
+          b.setAttribute("aria-label", p.name);
+          b.title = p.name;
+          b.addEventListener("click", () => {
+            manualStopAuto();
+            showProduce(i, b, { manual: true, speak: true });
+          });
+          abcRow.appendChild(b);
+        });
+        abcRow.setAttribute("aria-label", "Fruits and vegetables");
+        keyByNumberIndex = new Map();
+      } else if (currentMode === "colors") {
+        COLORS.forEach((c, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "key key-color";
+          b.textContent = c.emoji;
+          b.setAttribute("aria-pressed", "false");
+          b.setAttribute("aria-label", c.name + " — " + c.object);
+          b.title = c.name;
+          b.addEventListener("click", () => {
+            manualStopAuto();
+            showColor(i, b, { manual: true, speak: true });
+          });
+          abcRow.appendChild(b);
+        });
+        abcRow.setAttribute("aria-label", "Colors");
+        keyByNumberIndex = new Map();
+      } else if (currentMode === "numbers") {
+        for (let i = 0; i < 20; i++) {
+          const n = i + 1;
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "key key-num";
+          b.textContent = String(n);
+          b.setAttribute("aria-pressed", "false");
+          b.setAttribute("aria-label", "Number " + n);
+          b.title = "Number " + n;
+          b.addEventListener("click", () => {
+            manualStopAuto();
+            showNumber(i, b, { manual: true, numberOnly: true });
+          });
+          abcRow.appendChild(b);
+        }
+        abcRow.setAttribute("aria-label", "Numbers 1 to 20");
+      } else {
+        for (const ch of letters) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "key";
+          b.textContent = ch;
+          b.setAttribute("aria-pressed", "false");
+          b.addEventListener("click", () => {
+            manualStopAuto();
+            showLetter(ch, b, { manual: true, letterOnly: true });
+          });
+          abcRow.appendChild(b);
+        }
+        abcRow.setAttribute("aria-label", "Alphabet");
+        keyByNumberIndex = new Map();
+      }
+      keys = Array.from(abcRow.querySelectorAll(".key"));
+      if (currentMode === "abc") {
+        keyByLetter = new Map(keys.map((k) => [k.textContent, k]));
+      } else {
+        keyByLetter = new Map();
+      }
+      if (
+        (currentMode === "numbers" ||
+          currentMode === "produce" ||
+          currentMode === "colors") &&
+        keys.length
+      ) {
+        keyByNumberIndex = new Map(keys.map((k, i) => [i, k]));
+      }
+      if (wordPicks && (currentMode === "animals" || currentMode === "produce" || currentMode === "colors")) {
+        wordPicks.hidden = true;
+        wordPicks.innerHTML = "";
+      }
+    }
+
+    if (modeSelect) {
+      modeSelect.value = currentMode;
+    }
+    syncModeSelectFromInput();
+    syncSpeedSelectFromInput();
+    initKidDropdowns();
+    updateSubline();
+    buildKeyRow();
+
+    /** Next index in `letters` for the auto timer (0 = A, 1 = B, …). */
+    let autoNextIndex = 1;
+    let autoTimer = null;
+    let autoRunning = false;
+    /* Monotonic generation token. Bumped on every cancel/new-speech so that
+       stale onend/onerror handlers can detect they no longer represent the
+       active utterance and bail out (prevents "lion sound for horse" races). */
+    let speechToken = 0;
+
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let femaleVoice = null;
+    function pickEnglishFemaleVoice() {
+      if (!("speechSynthesis" in window)) {
+        return null;
+      }
+      try {
+        const list = speechSynthesis.getVoices();
+        if (!list || !list.length) {
+          return null;
+        }
+        const s = (v) => {
+          if (!v) {
+            return "";
+          }
+          return String((v.name || "") + " " + (v.voiceURI || "")).toLowerCase();
+        };
+        const isEn = (v) => v && (!v.lang || String(v.lang).toLowerCase().startsWith("en"));
+        const enList = list.filter((v) => isEn(v));
+        if (!enList.length) {
+          return null;
+        }
+        const normLang = (v) =>
+          String((v && v.lang) || "")
+            .toLowerCase()
+            .replace(/_/g, "-");
+        /** English (India) or Indian-accent English, when the OS lists it. */
+        const isIndianEnglishVoice = (v) => {
+          if (!v) {
+            return false;
+          }
+          if (normLang(v) === "en-in") {
+            return true;
+          }
+          const t = s(v);
+          if (
+            /\b(neerja|veena|priya|raveena|ishaa|sangeeta|lekha|vani)\b|english\s*\(\s*india\s*\)/i.test(
+              t
+            ) ||
+            /google.+(english|en).+india|wavenet.*en-in|neural2.*en-in|microsoft.*en-in|\.en-in\./i.test(
+              t
+            )
+          ) {
+            return true;
+          }
+          return false;
+        };
+        /**
+         * Many en-IN voices are male (e.g. Microsoft Prabhat). Match names & patterns,
+         * not just the word "male" in the string.
+         */
+        const isLikelyIndianOrEnglishIndiaMale = (v) => {
+          const t = s(v);
+          if (
+            /\b(prabhat|rishi|kartik|karan|kunal|vijay|mohan|madan|umang|bhashkar|neerav|girish|gagan|mukund|mihir|niranjan|pavan|shrey|tushar|vishal|vivek)\b/i.test(
+              t
+            )
+          ) {
+            return true;
+          }
+          if (/\bmicrosoft.+(prabhat|rishi|kartik|karan|kunal|mohan|madan|johny)\b/i.test(t)) {
+            return true;
+          }
+          if (/\bgoogle.+(en.in|en-in|en_in|india).{0,50}( - male| male,| - m,|\(male\)| man\b)/i.test(t)) {
+            return true;
+          }
+          if (/\benglish.+(india|in-en).{0,24}( - male| male,|\(male\)| man\b)/i.test(t)) {
+            return true;
+          }
+          if (/(india|en-in|en_in|_en_in|\.en-in)/i.test(t)) {
+            if (
+              /\b(rahul|rehaan|arjun|raj|aman|johny|darpan|bhrig|deepak|farhan|pradeep|aditya|abhay|dev|manish|naman|omkar|tanishq|tushar|yash)\b|neural.*( male|m\)|-m,|-m\))/i.test(
+                t
+              )
+            ) {
+              return true;
+            }
+            if (/\(male\)|- male,|_male_|\bb male\b| india.*( male| man\b)/i.test(t)) {
+              return true;
+            }
+          }
+          if (normLang(v) === "en-in" && v.gender === "male") {
+            return true;
+          }
+          return false;
+        };
+        const isLikelyMaleLabeled = (v) => {
+          if (v.gender === "male" || isLikelyIndianOrEnglishIndiaMale(v)) {
+            return true;
+          }
+          if (v.gender === "female") {
+            return false;
+          }
+          const t = s(v);
+          if (/\(male\)|\bmale\)|- male,| - male$|_male_|- male\+|gmail mms en-us-male|en-gb-male|en-au-male|en-in-male|en_in_male/i.test(t)) {
+            return true;
+          }
+          if (/(google us english|google uk english|english \(india\)).*\bmale\b/i.test(t)) {
+            return true;
+          }
+          if (/\b google .+ english .+ (male|m)\b/i.test(t) && /india|en.in|en_in/i.test(t)) {
+            return true;
+          }
+          return false;
+        };
+        /** Prefer only clearly female (or unlabeled but female-name) for en-IN — do not use “first en-IN in list” (often male). */
+        const isClearlyFemaleForIndianPick = (v) => {
+          if (!v) {
+            return false;
+          }
+          if (v.gender === "female") {
+            return true;
+          }
+          if (v.gender === "male" || isLikelyMaleLabeled(v)) {
+            return false;
+          }
+          const t = s(v);
+          if (/\b(female|woman|girl)\b/i.test(t) && !/male.*(female|woman)/i.test(t)) {
+            return true;
+          }
+          if (
+            /neural2-f|wavenet-f|studio-f|\.f\)|-f,|-f\)|\bfemale\)|\bwoman\)/i.test(
+              t
+            )
+          ) {
+            return true;
+          }
+          if (
+            /\b(neerja|veena|priya|preeti|raveena|ishaa|sangeeta|lekha|vani|swara|kavya|aarti|pooja|kaur|aisha)\b|microsoft neerja|google.+(en.in|india).*(female|woman|neerja|veena)/i.test(
+              t
+            )
+          ) {
+            return true;
+          }
+          return false;
+        };
+        /* Higher = sweeter / clearer for kids. Prefer soft Mac voices, then Microsoft Aria / Zira / Jenny, then Google & cloud female, then any female, then a neutral en locale. */
+        const sweetScore = (v) => {
+          if (isLikelyMaleLabeled(v)) {
+            return -2000;
+          }
+          const t = s(v);
+          let n = 0;
+          if (
+            /samantha|karen|tessa|fiona|moira|victoria|allison|serena|zira|aisha|veena|sangeeta|hazel|nicole|kendra|joanna|amelie|sarah|\bava\b|\bsiri\b/i.test(
+              t
+            ) ||
+            /\bsara\b/.test(t)
+          ) {
+            n += 200;
+          }
+          if (
+            /microsoft (zira|aria|jenny|michelle|sonia|natasha|aimee|libby|maisie|yating|neerja|veena)/i.test(
+              t
+            )
+          ) {
+            n += 180;
+          }
+          if (/wavenet-f|neural2-f|google.+(wavenet|neural|studio).+female|natural\s+pro\s*-\s*female/i.test(t)) {
+            n += 160;
+          }
+          if (/google.*(female|woman)|\bfemale\).*en|premium.*en-.*(female|woman)/i.test(t)) {
+            n += 150;
+          }
+          if (v.gender === "female") {
+            n += 120;
+          }
+          if (/\b(female|woman)\b/i.test(t) && !/male.*female|female.*male/i.test(t)) {
+            n += 100;
+          }
+          if (/(australian|irish).{0,10}(female|fiona|karen|samantha)/i.test(t)) {
+            n += 50;
+          }
+          if (/(indian|en-in).{0,12}(female|veena|sangeeta|neerja|priya|lekha|vani|woman)/i.test(t)) {
+            n += 55;
+          }
+          const lg = String(v.lang || "")
+            .toLowerCase();
+          if (lg === "en-in") {
+            n += 28;
+          } else if (lg === "en-us" || lg === "en-gb" || lg === "en-au" || lg === "en-ie") {
+            n += 12;
+          } else if (lg.startsWith("en")) {
+            n += 8;
+          }
+          return n;
+        };
+        const indianFemales = enList.filter(
+          (v) => isIndianEnglishVoice(v) && isClearlyFemaleForIndianPick(v)
+        );
+        if (indianFemales.length) {
+          let indBest = indianFemales[0];
+          let indN = -99999;
+          for (const v of indianFemales) {
+            const n = sweetScore(v);
+            if (n > indN) {
+              indN = n;
+              indBest = v;
+            }
+          }
+          return indBest;
+        }
+        const nonMale = enList.filter((v) => !isLikelyMaleLabeled(v));
+        const pool = nonMale.length ? nonMale : enList;
+        let best = pool[0];
+        let bestN = -99999;
+        for (const v of pool) {
+          const n = sweetScore(v);
+          if (n > bestN) {
+            bestN = n;
+            best = v;
+          }
+        }
+        if (bestN < -1000) {
+          const fallback = nonMale.length ? nonMale[0] : enList.find((v) => !isLikelyMaleLabeled(v));
+          return fallback || enList[0] || null;
+        }
+        return best || null;
+      } catch (_) {
+        return null;
+      }
+    }
+    function syncFemaleVoice() {
+      try {
+        femaleVoice = pickEnglishFemaleVoice();
+      } catch (_) {
+        femaleVoice = null;
+      }
+    }
+    /** Re-resolve a chosen voice in the current list (avoids silent failures from stale references). */
+    function resolveCurrentFemaleVoice() {
+      if (!femaleVoice) {
+        return null;
+      }
+      try {
+        const list = speechSynthesis.getVoices();
+        return list.find((v) => v && v.voiceURI === femaleVoice.voiceURI) || null;
+      } catch (_) {
+        return null;
+      }
+    }
+    if ("speechSynthesis" in window) {
+      speechSynthesis.addEventListener("voiceschanged", syncFemaleVoice);
+      syncFemaleVoice();
+    }
+
+    /** Safari/WebKit: resume speech queue; refresh voices. */
+    function prepareSpeechSynthesis() {
+      if (!("speechSynthesis" in window)) {
+        return;
+      }
+      try {
+        speechSynthesis.getVoices();
+        if (typeof speechSynthesis.resume === "function" && speechSynthesis.paused) {
+          speechSynthesis.resume();
+        }
+      } catch (_) {}
+      syncFemaleVoice();
+    }
+
+    let animalSfx = null;
+    function stopAnimalSfx() {
+      if (!animalSfx) {
+        return;
+      }
+      try {
+        animalSfx.pause();
+        animalSfx.currentTime = 0;
+        const tag = animalSfx.tagName;
+        if (tag === "VIDEO" || tag === "AUDIO") {
+          if (animalSfx.parentNode) {
+            animalSfx.parentNode.removeChild(animalSfx);
+          }
+        } else {
+          animalSfx.removeAttribute("src");
+          animalSfx.load();
+        }
+      } catch (_) {}
+      animalSfx = null;
+    }
+    function clipVolumeForAnimal(a) {
+      if (!a) {
+        return 0.85;
+      }
+      if (typeof a.sfxVolume === "number") {
+        return Math.max(0, Math.min(1, a.sfxVolume));
+      }
+      if (a.name === "Sheep") {
+        return 1;
+      }
+      return 0.85;
+    }
+
+    /** OGV/WebM/MP4 are often video containers; HTMLAudioElement will not play them reliably — use a hidden <video>. */
+    function playAnimalSfx(url, opts) {
+      opts = opts || {};
+      const vol = typeof opts.volume === "number" ? Math.max(0, Math.min(1, opts.volume)) : 1;
+      if (!url || !soundOn) {
+        return;
+      }
+      try {
+        stopAnimalSfx();
+        const needVideo = /\.(ogv|webm|mp4)(\?|#|$)/i.test(String(url).split("?")[0]);
+        if (needVideo) {
+          const v = document.createElement("video");
+          v.className = "animal-sfx-media";
+          v.setAttribute("playsinline", "");
+          v.setAttribute("webkit-playsinline", "");
+          v.setAttribute("aria-hidden", "true");
+          v.muted = false;
+          v.volume = vol;
+          v.preload = "auto";
+          v.src = url;
+          document.body.appendChild(v);
+          animalSfx = v;
+          const p = v.play();
+          if (p && typeof p.catch === "function") {
+            p.catch(function () {});
+          }
+          v.addEventListener(
+            "ended",
+            function () {
+              stopAnimalSfx();
+            },
+            { once: true }
+          );
+          v.addEventListener(
+            "error",
+            function () {
+              stopAnimalSfx();
+            },
+            { once: true }
+          );
+        } else {
+          const a = new Audio();
+          a.preload = "auto";
+          a.volume = vol;
+          a.src = url;
+          animalSfx = a;
+          const p = a.play();
+          if (p && typeof p.catch === "function") {
+            p.catch(function () {});
+          }
+        }
+      } catch (_) {
+        stopAnimalSfx();
+      }
+    }
+
+    let soundOn = localStorage.getItem(STORAGE_SOUND) !== "0";
+    function setSoundUI(on) {
+      soundOn = on;
+      localStorage.setItem(STORAGE_SOUND, on ? "1" : "0");
+      if (btnSound) {
+        btnSound.setAttribute("aria-pressed", on ? "true" : "false");
+        btnSound.setAttribute("aria-label", on ? "Voice on" : "Muted");
+        const icoOn =
+          '<span class="btn-ico" aria-hidden="true"><svg class="ico-sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></span>';
+        const icoOff =
+          '<span class="btn-ico" aria-hidden="true"><svg class="ico-sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg></span>';
+        btnSound.innerHTML = (on ? icoOn : icoOff) + (on ? '<span class="btn-text"> Voice on</span>' : '<span class="btn-text"> Muted</span>');
+      }
+      if (on) {
+        prepareSpeechSynthesis();
+      } else {
+        cancelAllSpeech();
+      }
+    }
+    if (btnSound) {
+      btnSound.addEventListener("click", () => {
+        setSoundUI(!soundOn);
+      });
+    }
+    setSoundUI(soundOn);
+
+    /* First tap/click unlocks speech on Safari and some mobile Chrome builds. */
+    document.addEventListener(
+      "pointerdown",
+      () => {
+        prepareSpeechSynthesis();
+      },
+      { once: true, capture: true, passive: true }
+    );
+
+    function applyKidTheme(letter) {
+      const L = letter.toUpperCase();
+      if (L < "A" || L > "Z") return;
+      const i = L.charCodeAt(0) - 65;
+      const h = (i * 14) % 360;
+      stage.style.setProperty("--kid-h", String(h));
+      elLetter.style.color = "hsl(" + h + ", 70%, 46%)";
+    }
+    function applyNumberTheme(n) {
+      const num = Math.max(1, Math.min(20, n | 0));
+      const h = ((num - 1) * 17) % 360;
+      stage.style.setProperty("--kid-h", String(h));
+      elLetter.style.color = "hsl(" + h + ", 68%, 46%)";
+    }
+    function applyProduceTheme(i) {
+      const n = Math.max(0, Math.min(PRODUCE.length - 1, i | 0));
+      const h = (n * 23) % 360;
+      stage.style.setProperty("--kid-h", String(h));
+      elLetter.style.color = "hsl(" + h + ", 64%, 44%)";
+    }
+    function parseHexToRgb(hex) {
+      const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(String(hex == null ? "" : hex).trim());
+      if (!m) {
+        return null;
+      }
+      return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
+    }
+    function hexLuminanceIsLight(hex) {
+      const rgb = parseHexToRgb(hex);
+      if (!rgb) {
+        return false;
+      }
+      const y = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
+      return y > 0.78;
+    }
+    function hexToHueForTheme(hex) {
+      const rgb = parseHexToRgb(hex);
+      if (!rgb) {
+        return 200;
+      }
+      const r = rgb.r / 255;
+      const g = rgb.g / 255;
+      const b = rgb.b / 255;
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      const d = max - min;
+      if (d < 0.02) {
+        return 200;
+      }
+      let h = 0;
+      if (max === r) {
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+      } else if (max === g) {
+        h = ((b - r) / d + 2) / 6;
+      } else {
+        h = ((r - g) / d + 4) / 6;
+      }
+      return Math.round(h * 360);
+    }
+    function applyColorCardTheme(c) {
+      if (!stage) {
+        return;
+      }
+      const h = hexToHueForTheme(c.hex);
+      stage.style.setProperty("--kid-h", String(h));
+    }
+    function mixHexWithWhite(hex, t) {
+      const rgb = parseHexToRgb(hex);
+      if (!rgb) {
+        return "#e8f4f8";
+      }
+      const u = Math.max(0, Math.min(1, t));
+      const r = Math.round(rgb.r * (1 - u) + 255 * u);
+      const g = Math.round(rgb.g * (1 - u) + 255 * u);
+      const b = Math.round(rgb.b * (1 - u) + 255 * u);
+      return "rgb(" + r + "," + g + "," + b + ")";
+    }
+    function rgbaFromColorHex(hex, alpha) {
+      const rgb = parseHexToRgb(hex);
+      if (!rgb) {
+        return "rgba(107,168,197," + Math.max(0, Math.min(1, alpha)) + ")";
+      }
+      const a = Math.max(0, Math.min(1, alpha));
+      return "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + a + ")";
+    }
+    function applyColorModePageBackground(hex) {
+      const top = mixHexWithWhite(hex, 0.78);
+      const mid = mixHexWithWhite(hex, 0.86);
+      const bottom = mixHexWithWhite(hex, 0.91);
+      document.body.style.background =
+        "linear-gradient(180deg, " + top + " 0%, " + mid + " 45%, " + bottom + " 100%)";
+      const mesh = document.getElementById("bgMesh");
+      if (mesh) {
+        mesh.style.background =
+          "linear-gradient(125deg, " + rgbaFromColorHex(hex, 0.4) + " 0%, transparent 45%)," +
+          "linear-gradient(215deg, " + rgbaFromColorHex(hex, 0.32) + " 0%, transparent 50%)," +
+          "linear-gradient(315deg, " + rgbaFromColorHex(hex, 0.28) + " 0%, transparent 45%)," +
+          "linear-gradient(180deg, " + mixHexWithWhite(hex, 0.32) + " 0%, " + mixHexWithWhite(hex, 0.5) + " 55%, " + mixHexWithWhite(hex, 0.4) + " 100%)";
+        mesh.style.backgroundSize = "200% 200%";
+      }
+      document.body.classList.add("theme-color-bg");
+    }
+    function resetPageBackgroundToDefault() {
+      document.body.classList.remove("theme-color-bg");
+      document.body.style.background = "";
+      const mesh = document.getElementById("bgMesh");
+      if (mesh) {
+        mesh.style.background = "";
+        mesh.style.backgroundSize = "";
+      }
+    }
+    function syncLeftPanel() {
+      if (!elLetterWrap || !elColorPanel) {
+        return;
+      }
+      const isColors = currentMode === "colors";
+      elLetterWrap.hidden = isColors;
+      elColorPanel.hidden = !isColors;
+    }
+    syncLeftPanel();
+
+    function kidHaptic() {
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        navigator.vibrate(12);
+      }
+    }
+
+    function pickKidHint(L, opts) {
+      if (currentMode === "abc" && opts.letterPicking) {
+        return "Tap a word to hear it, or try another letter.";
+      }
+      if (currentMode === "numbers") {
+        const n = opts.num | 0;
+        if (n === 20) {
+          if (opts.auto) {
+            return "Twenty! Then we start at one again. 🎉";
+          }
+          if (opts.manual || opts.speak) {
+            return "Twenty — you counted to the end! ⭐";
+          }
+        }
+        if (opts.manual) {
+          return (
+            PRAISES[Math.floor(Math.random() * PRAISES.length)] +
+            "Count each picture! Try another number, or use Play for 1–20."
+          );
+        }
+        if (opts.auto) {
+          return "Count each picture in the group! Say the number out loud.";
+        }
+        return "Count each picture! Pick another number.";
+      }
+      if (currentMode === "produce") {
+        const isLast = currentProduceIndex === PRODUCE.length - 1;
+        if (isLast) {
+          if (opts.auto) {
+            return "That was the last one! We start from the first fruit. 🍎";
+          }
+          if (opts.manual || opts.speak) {
+            return "You saw every one! Yummy! ⭐";
+          }
+        }
+        if (opts.manual) {
+          return PRAISES[Math.floor(Math.random() * PRAISES.length)] + "Try another, or press Play to hear all in order.";
+        }
+        if (opts.auto) {
+          return "Say the name out loud — fruit or vegetable!";
+        }
+        return "Great! Pick another picture.";
+      }
+      if (currentMode === "colors") {
+        const isLast = currentColorIndex === COLORS.length - 1;
+        if (isLast) {
+          if (opts.auto) {
+            return "Last color! Then we go back to the first. 🌈";
+          }
+          if (opts.manual || opts.speak) {
+            return "You know all the colors! Star work! ⭐";
+          }
+        }
+        if (opts.manual) {
+          return PRAISES[Math.floor(Math.random() * PRAISES.length)] + "Look left for the color, right for the thing. Try another or Play.";
+        }
+        if (opts.auto) {
+          return "The color is on the left, the picture on the right. Say both!";
+        }
+        return "Pick another color to learn more.";
+      }
+      if (currentMode === "animals") {
+        const isLast = currentAnimalIndex === ANIMALS.length - 1;
+        if (isLast) {
+          if (opts.auto) {
+            return "Last animal in the list! Next, we start from the beginning. 🎉";
+          }
+          if (opts.manual || opts.speak) {
+            return "You heard every animal sound! You’re a star! ⭐";
+          }
+        }
+        if (opts.manual) {
+          return PRAISES[Math.floor(Math.random() * PRAISES.length)] + "Try another, or press Play to hear all in order.";
+        }
+        if (opts.auto) {
+          return "Listen: the name and the sound word. Try saying it, too.";
+        }
+        return "Great! Pick another animal.";
+      }
+      if (L === "Z") {
+        if (opts.auto) {
+          return "That was Z! The alphabet starts again at A. 🎉";
+        }
+        if (opts.manual || opts.speak) {
+          return "Z — you made it through the whole alphabet! You’re a star! ⭐";
+        }
+      }
+      if (opts.manual) {
+        return PRAISES[Math.floor(Math.random() * PRAISES.length)] + "Try another letter, or press Play for auto A–Z.";
+      }
+      if (opts.auto) {
+        return "Look at the picture and say the word out loud.";
+      }
+      return "Great! Pick another letter.";
+    }
+
+    function dismissWelcome() {
+      if (welcomeBanner && !welcomeBanner.hidden) {
+        welcomeBanner.hidden = true;
+        try {
+          localStorage.setItem(STORAGE_WELCOME, "1");
+        } catch (_) {}
+      }
+    }
+
+    const MAX_BG_FLOATS = 22;
+    function spawnFloatersForEmoji(emoji, count) {
+      if (mqReduce.matches || !bgFloats) return;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement("span");
+        el.className = "bg-float-emoji";
+        el.textContent = emoji;
+        el.setAttribute("aria-hidden", "true");
+        const leftP = 4 + Math.random() * 88;
+        const sizeRem = 2.2 + Math.random() * 2.8;
+        const sec = 9 + Math.random() * 5;
+        const driftX = -28 + Math.random() * 56;
+        const endRot = -18 + Math.random() * 48;
+        el.style.left = leftP + "%";
+        el.style.fontSize = sizeRem + "rem";
+        el.style.setProperty("--end-x", driftX + "px");
+        el.style.setProperty("--end-rot", endRot + "deg");
+        el.style.animation = "bgDrift " + sec + "s linear forwards";
+        el.addEventListener("animationend", () => el.remove());
+        bgFloats.appendChild(el);
+        while (bgFloats.children.length > MAX_BG_FLOATS) {
+          bgFloats.removeChild(bgFloats.firstChild);
+        }
+      }
+    }
+
+    /**
+     * Speak synchronously inside the current event turn. Chrome silently drops
+     * speak() calls when scheduled via setTimeout after cancel(); calling speak()
+     * synchronously inside the click handler keeps the user-gesture activation
+     * alive and is the most reliable pattern across Chrome / Safari / Firefox.
+     *
+     * Returns the token assigned to this utterance so callers can guard their
+     * onend/onerror handlers against stale invocations.
+     */
+    function speakNow(buildUtterance) {
+      if (!("speechSynthesis" in window)) {
+        return 0;
+      }
+      const tok = ++speechToken;
+      try {
+        if (speechSynthesis.speaking || speechSynthesis.pending) {
+          speechSynthesis.cancel();
+        }
+        if (
+          typeof speechSynthesis.resume === "function" &&
+          speechSynthesis.paused
+        ) {
+          speechSynthesis.resume();
+        }
+        syncFemaleVoice();
+        const utt = buildUtterance(tok);
+        if (utt) {
+          speechSynthesis.speak(utt);
+        }
+      } catch (_) {}
+      return tok;
+    }
+
+    function cancelAllSpeech() {
+      speechToken += 1;
+      try {
+        if ("speechSynthesis" in window) {
+          speechSynthesis.cancel();
+        }
+      } catch (_) {}
+      stopAnimalSfx();
+    }
+
+    function getAbcList(L) {
+      const a = PAIRS[L];
+      if (!a || !a.length) {
+        return null;
+      }
+      return a;
+    }
+
+    function speakAbcWord(word) {
+      if (!("speechSynthesis" in window) || !soundOn || !word) {
+        return;
+      }
+      stopAnimalSfx();
+      speakNow(function () {
+        const u = new SpeechSynthesisUtterance(String(word));
+        const vUse = resolveCurrentFemaleVoice();
+        u.lang = (vUse && vUse.lang) || "en-US";
+        u.rate = KID_SPEECH_RATE;
+        u.pitch = 1.1;
+        if (vUse) {
+          u.voice = vUse;
+        }
+        return u;
+      });
+    }
+
+    function renderWordPicks(L, activeIndex) {
+      if (!wordPicks) {
+        return;
+      }
+      if (currentMode !== "abc") {
+        wordPicks.hidden = true;
+        wordPicks.innerHTML = "";
+        return;
+      }
+      const list = getAbcList(L);
+      if (!list) {
+        wordPicks.hidden = true;
+        wordPicks.innerHTML = "";
+        return;
+      }
+      wordPicks.hidden = false;
+      wordPicks.setAttribute("aria-label", "Word choices for letter " + L);
+      wordPicks.innerHTML = "";
+      list.forEach((item, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "word-pick";
+        b.textContent = item.emoji + " " + item.word;
+        b.setAttribute("aria-pressed", i === activeIndex ? "true" : "false");
+        b.setAttribute("aria-label", item.word);
+        b.addEventListener("click", function () {
+          selectAbcOption(L, i);
+        });
+        wordPicks.appendChild(b);
+      });
+    }
+
+    function selectAbcOption(L, index) {
+      const list = getAbcList(L);
+      if (!list || index < 0 || index >= list.length) {
+        return;
+      }
+      const item = list[index];
+      manualStopAuto();
+      stopAnimalSfx();
+      if (elSound) {
+        elSound.hidden = true;
+      }
+      elEmoji.textContent = item.emoji;
+      elWord.textContent = item.word;
+      applyKidTheme(L);
+      elHint.textContent = pickKidHint(L, { manual: true });
+      dismissWelcome();
+      kidHaptic();
+      renderWordPicks(L, index);
+      stage.classList.remove("pop");
+      void stage.offsetWidth;
+      stage.classList.add("pop");
+      if (soundOn) {
+        speakAbcWord(item.word);
+      }
+      spawnFloatersForEmoji(item.emoji, 5);
+      if (keyByLetter && keyByLetter.get) {
+        const kb = keyByLetter.get(L);
+        if (keys && keys.length) {
+          keys.forEach((k) => {
+            k.setAttribute("aria-pressed", k === kb ? "true" : "false");
+          });
+        }
+      }
+    }
+
+    function showNumber(nIndex, focusBtn, opts = {}) {
+      resetPageBackgroundToDefault();
+      if (nIndex < 0 || nIndex >= 20) {
+        return;
+      }
+      const isAuto = !!opts.auto;
+      const applyFirst = !!opts.applyFirst;
+      const numberOnly = !!opts.numberOnly;
+      if (elSound) {
+        elSound.hidden = true;
+      }
+      if (wordPicks) {
+        wordPicks.hidden = true;
+        wordPicks.innerHTML = "";
+      }
+      const num = nIndex + 1;
+      elLetter.textContent = String(num);
+      elWord.textContent = NUMBER_NAMES[nIndex];
+      elEmoji.className = "emoji counting-emoji";
+      buildCountingEmojiGrid(nIndex, num);
+      setCountingEmojiSize(num);
+      applyNumberTheme(num);
+      currentNumberIndex = nIndex;
+      if (isAuto) {
+        elHint.textContent = pickKidHint(String(num), {
+          ...opts,
+          auto: true,
+          num: num
+        });
+      } else {
+        elHint.textContent = pickKidHint(String(num), {
+          ...opts,
+          manual: true,
+          num: num,
+          letterPicking: !applyFirst
+        });
+      }
+      if (applyFirst && opts.manual) {
+        dismissWelcome();
+        kidHaptic();
+      } else if (numberOnly) {
+        dismissWelcome();
+        kidHaptic();
+      }
+      stage.classList.remove("pop");
+      void stage.offsetWidth;
+      stage.classList.add("pop");
+      keys.forEach((k, i) => k.setAttribute("aria-pressed", i === nIndex ? "true" : "false"));
+      if (focusBtn) {
+        focusBtn.focus({ preventScroll: true });
+      }
+      if (isAuto) {
+        if (soundOn) {
+          speakAbcWord(NUMBER_NAMES[nIndex] + "!");
+        }
+        const floatCount = opts.manual || opts.speak ? 5 : 3;
+        spawnFloatersForEmoji(getNumberUnitEmoji(nIndex), floatCount);
+      } else if (applyFirst) {
+        if (opts.speak && soundOn) {
+          speakAbcWord(NUMBER_NAMES[nIndex] + "!");
+        }
+        spawnFloatersForEmoji(getNumberUnitEmoji(nIndex), 5);
+      } else {
+        if (numberOnly && soundOn) {
+          speakAbcWord(NUMBER_NAMES[nIndex] + "!");
+        }
+        spawnFloatersForEmoji(getNumberUnitEmoji(nIndex), numberOnly ? 5 : 2);
+      }
+      syncLeftPanel();
+    }
+
+    function speakAnimalTtsLine(text) {
+      if (!("speechSynthesis" in window) || !soundOn) {
+        return;
+      }
+      stopAnimalSfx();
+      speakNow(function () {
+        const u = new SpeechSynthesisUtterance(text);
+        const vUse = resolveCurrentFemaleVoice();
+        u.lang = (vUse && vUse.lang) || "en-US";
+        u.rate = KID_SPEECH_RATE;
+        u.pitch = 1.08;
+        if (vUse) {
+          u.voice = vUse;
+        }
+        return u;
+      });
+    }
+
+    function speakAnimal(a) {
+      if (!a || !soundOn) {
+        return;
+      }
+      stopAnimalSfx();
+      if (a.clip) {
+        const vClip = { volume: clipVolumeForAnimal(a) };
+        if (!("speechSynthesis" in window)) {
+          playAnimalSfx(a.clip, vClip);
+          return;
+        }
+        speakNow(function (myTok) {
+          const u = new SpeechSynthesisUtterance(a.name + ".");
+          const vUse = resolveCurrentFemaleVoice();
+          u.lang = (vUse && vUse.lang) || "en-US";
+          u.rate = KID_SPEECH_RATE;
+          u.pitch = 1.08;
+          if (vUse) {
+            u.voice = vUse;
+          }
+          /* Bail if a newer speech request has been issued before our onend fires. */
+          u.onend = function () {
+            if (!soundOn || myTok !== speechToken) {
+              return;
+            }
+            playAnimalSfx(a.clip, vClip);
+          };
+          u.onerror = function () {
+            if (!soundOn || myTok !== speechToken) {
+              return;
+            }
+            playAnimalSfx(a.clip, vClip);
+          };
+          return u;
+        });
+      } else {
+        speakNow(function () {
+          const u = new SpeechSynthesisUtterance(a.name + ". " + a.sound + "!");
+          const vUse = resolveCurrentFemaleVoice();
+          u.lang = (vUse && vUse.lang) || "en-US";
+          u.rate = KID_SPEECH_RATE;
+          u.pitch = 1.08;
+          if (vUse) {
+            u.voice = vUse;
+          }
+          return u;
+        });
+      }
+    }
+
+    function showLetter(letter, focusBtn, opts = {}) {
+      resetPageBackgroundToDefault();
+      const L = letter.toUpperCase();
+      const list = getAbcList(L);
+      if (!list) {
+        return;
+      }
+      const isAuto = !!opts.auto;
+      const applyFirst = !!opts.applyFirst;
+      const letterOnly = !!opts.letterOnly;
+      if (elSound) {
+        elSound.hidden = true;
+      }
+      resetEmojiToNormal();
+      elLetter.textContent = L;
+      applyKidTheme(L);
+      if (isAuto) {
+        const pick = list[0];
+        elEmoji.textContent = pick.emoji;
+        elWord.textContent = pick.word;
+        if (wordPicks) {
+          wordPicks.hidden = true;
+          wordPicks.innerHTML = "";
+        }
+      } else if (applyFirst) {
+        const pick = list[0];
+        elEmoji.textContent = pick.emoji;
+        elWord.textContent = pick.word;
+        renderWordPicks(L, 0);
+      } else {
+        const pick = list[0];
+        elEmoji.textContent = pick.emoji;
+        elWord.textContent = pick.word;
+        renderWordPicks(L, 0);
+      }
+      if (isAuto) {
+        elHint.textContent = pickKidHint(L, { ...opts, auto: true, letterPicking: false });
+      } else {
+        elHint.textContent = pickKidHint(L, {
+          ...opts,
+          manual: true,
+          letterPicking: !applyFirst
+        });
+      }
+      if (applyFirst && opts.manual) {
+        dismissWelcome();
+        kidHaptic();
+      } else if (letterOnly) {
+        dismissWelcome();
+        kidHaptic();
+      }
+      stage.classList.remove("pop");
+      void stage.offsetWidth;
+      stage.classList.add("pop");
+      keys.forEach((k) => k.setAttribute("aria-pressed", k.textContent === L ? "true" : "false"));
+      if (focusBtn) {
+        focusBtn.focus({ preventScroll: true });
+      }
+      if (isAuto) {
+        if (soundOn) {
+          speakAbcWord(list[0].word);
+        }
+        const floatCount = opts.manual || opts.speak ? 5 : 3;
+        spawnFloatersForEmoji(list[0].emoji, floatCount);
+      } else if (applyFirst) {
+        if (opts.speak && soundOn) {
+          speakAbcWord(list[0].word);
+        }
+        spawnFloatersForEmoji(list[0].emoji, 5);
+      } else {
+        if (letterOnly && soundOn) {
+          speakAbcWord(list[0].word);
+        }
+        spawnFloatersForEmoji(list[0].emoji, letterOnly ? 5 : 2);
+      }
+      syncLeftPanel();
+    }
+
+    function showAnimal(i, focusBtn, opts = {}) {
+      resetPageBackgroundToDefault();
+      if (wordPicks) {
+        wordPicks.hidden = true;
+        wordPicks.innerHTML = "";
+      }
+      if (i < 0 || i >= ANIMALS.length) {
+        return;
+      }
+      const a = ANIMALS[i];
+      currentAnimalIndex = i;
+      const isAuto = !!opts.auto;
+      if (elSound) {
+        elSound.textContent = a.clip
+          ? "Listen: " + a.name + " — then a real " + a.sound + "."
+          : "We say: " + a.name + " — " + a.sound + ".";
+        elSound.hidden = false;
+      }
+      const m = a.name.match(/[A-Za-z]/);
+      const ch = m ? m[0].toUpperCase() : "A";
+      elLetter.textContent = ch;
+      resetEmojiToNormal();
+      elEmoji.textContent = a.emoji;
+      elWord.textContent = a.name;
+      applyKidTheme(ch);
+      if (opts.manual || opts.speak) {
+        dismissWelcome();
+        kidHaptic();
+      }
+      elHint.textContent = pickKidHint(null, { ...opts, auto: isAuto });
+
+      stage.classList.remove("pop");
+      void stage.offsetWidth;
+      stage.classList.add("pop");
+
+      keys.forEach((k, j) => k.setAttribute("aria-pressed", j === i ? "true" : "false"));
+      if (focusBtn) {
+        focusBtn.focus({ preventScroll: true });
+      }
+      if (isAuto || opts.speak) {
+        speakAnimal(a);
+      }
+      const floatCount = opts.manual || opts.speak ? 5 : 3;
+      spawnFloatersForEmoji(a.emoji, floatCount);
+      syncLeftPanel();
+    }
+
+    function showProduce(i, focusBtn, opts = {}) {
+      resetPageBackgroundToDefault();
+      if (i < 0 || i >= PRODUCE.length) {
+        return;
+      }
+      if (wordPicks) {
+        wordPicks.hidden = true;
+        wordPicks.innerHTML = "";
+      }
+      const p = PRODUCE[i];
+      currentProduceIndex = i;
+      const isAuto = !!opts.auto;
+      if (elSound) {
+        elSound.hidden = true;
+      }
+      const m = p.name.match(/[A-Za-z]/);
+      const ch = m ? m[0].toUpperCase() : "A";
+      elLetter.textContent = ch;
+      resetEmojiToNormal();
+      elEmoji.textContent = p.emoji;
+      elWord.textContent = p.name;
+      applyProduceTheme(i);
+      if (opts.manual || opts.speak) {
+        dismissWelcome();
+        kidHaptic();
+      }
+      elHint.textContent = pickKidHint(null, { ...opts, auto: isAuto });
+      stage.classList.remove("pop");
+      void stage.offsetWidth;
+      stage.classList.add("pop");
+      keys.forEach((k, j) => k.setAttribute("aria-pressed", j === i ? "true" : "false"));
+      if (focusBtn) {
+        focusBtn.focus({ preventScroll: true });
+      }
+      if (isAuto || opts.speak) {
+        if (soundOn) {
+          speakAbcWord(p.name);
+        }
+      }
+      const floatCount = opts.manual || opts.speak ? 5 : 3;
+      spawnFloatersForEmoji(p.emoji, floatCount);
+      syncLeftPanel();
+    }
+
+    function showColor(i, focusBtn, opts = {}) {
+      if (i < 0 || i >= COLORS.length) {
+        return;
+      }
+      if (wordPicks) {
+        wordPicks.hidden = true;
+        wordPicks.innerHTML = "";
+      }
+      const c = COLORS[i];
+      currentColorIndex = i;
+      const isAuto = !!opts.auto;
+      if (elSound) {
+        elSound.hidden = true;
+      }
+      resetEmojiToNormal();
+      elEmoji.className = "emoji";
+      elEmoji.textContent = c.emoji;
+      elWord.textContent = c.object;
+      applyColorCardTheme(c);
+      if (elColorSwatch) {
+        elColorSwatch.style.background = c.hex;
+        if (hexLuminanceIsLight(c.hex)) {
+          elColorSwatch.classList.add("is-light");
+        } else {
+          elColorSwatch.classList.remove("is-light");
+        }
+        elColorSwatch.setAttribute("aria-label", c.name + " color");
+      }
+      if (elColorName) {
+        elColorName.textContent = c.name;
+      }
+      if (opts.manual || opts.speak) {
+        dismissWelcome();
+        kidHaptic();
+      }
+      elHint.textContent = pickKidHint(null, { ...opts, auto: isAuto });
+      stage.classList.remove("pop");
+      void stage.offsetWidth;
+      stage.classList.add("pop");
+      keys.forEach((k, j) => k.setAttribute("aria-pressed", j === i ? "true" : "false"));
+      if (focusBtn) {
+        focusBtn.focus({ preventScroll: true });
+      }
+      const tts = c.name + "! " + c.object + ".";
+      if (isAuto || opts.speak) {
+        if (soundOn) {
+          speakAbcWord(tts);
+        }
+      }
+      const floatCount = opts.manual || opts.speak ? 5 : 3;
+      spawnFloatersForEmoji(c.emoji, floatCount);
+      applyColorModePageBackground(c.hex);
+      syncLeftPanel();
+    }
+
+    function alignAutoNextToCurrentCard() {
+      if (currentMode === "abc") {
+        const cur = elLetter && elLetter.textContent ? elLetter.textContent.trim().charAt(0) : "A";
+        let i = letters.indexOf(cur);
+        if (i < 0) {
+          i = 0;
+        }
+        autoNextIndex = i;
+      } else if (currentMode === "numbers") {
+        autoNextIndex = currentNumberIndex;
+      } else if (currentMode === "produce") {
+        autoNextIndex = currentProduceIndex;
+      } else if (currentMode === "colors") {
+        autoNextIndex = currentColorIndex;
+      } else {
+        autoNextIndex = currentAnimalIndex;
+      }
+    }
+
+    function autoStep() {
+      if (currentMode === "abc") {
+        const L = letters[autoNextIndex];
+        showLetter(L, null, { auto: true });
+        autoNextIndex = (autoNextIndex + 1) % 26;
+      } else if (currentMode === "numbers") {
+        const i = autoNextIndex;
+        showNumber(i, null, { auto: true });
+        autoNextIndex = (i + 1) % 20;
+      } else if (currentMode === "produce") {
+        const j = autoNextIndex;
+        showProduce(j, null, { auto: true });
+        autoNextIndex = (j + 1) % PRODUCE.length;
+      } else if (currentMode === "colors") {
+        const j = autoNextIndex;
+        showColor(j, null, { auto: true });
+        autoNextIndex = (j + 1) % COLORS.length;
+      } else {
+        const j = autoNextIndex;
+        showAnimal(j, null, { auto: true });
+        autoNextIndex = (j + 1) % ANIMALS.length;
+      }
+    }
+
+    function clearAutoTimer() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+    }
+
+    function setPlayButtonUI(playing) {
+      if (!btnAuto) {
+        return;
+      }
+      btnAuto.setAttribute("aria-pressed", playing ? "true" : "false");
+      btnAuto.setAttribute("aria-label", playing ? "Pause" : "Play");
+      btnAuto.innerHTML = playing
+        ? '<span class="btn-ico" aria-hidden="true">⏸</span><span class="btn-text"> Pause</span>'
+        : '<span class="btn-ico" aria-hidden="true">▶</span><span class="btn-text"> Play</span>';
+    }
+
+    function startAuto(opts) {
+      const o = opts && typeof opts === "object" ? opts : {};
+      const timerOnly = o.timerOnly === true;
+      clearAutoTimer();
+      const ms = parseInt(autoSpeed.value, 10) || 3500;
+      if (!timerOnly) {
+        alignAutoNextToCurrentCard();
+        if (!o.skipImmediateStep) {
+          autoStep();
+        }
+      }
+      autoTimer = setInterval(autoStep, ms);
+      autoRunning = true;
+      setPlayButtonUI(true);
+      if (currentMode === "abc") {
+        autoStatus.textContent = "Auto: on — next letter every " + ms / 1000 + "s";
+      } else if (currentMode === "numbers") {
+        autoStatus.textContent = "Auto: on — next number every " + ms / 1000 + "s";
+      } else if (currentMode === "produce") {
+        autoStatus.textContent = "Auto: on — next item every " + ms / 1000 + "s";
+      } else if (currentMode === "colors") {
+        autoStatus.textContent = "Auto: on — next color every " + ms / 1000 + "s";
+      } else {
+        autoStatus.textContent = "Auto: on — next animal every " + ms / 1000 + "s";
+      }
+    }
+
+    function stopAuto() {
+      clearAutoTimer();
+      autoRunning = false;
+      setPlayButtonUI(false);
+      if (currentMode === "abc") {
+        autoStatus.textContent = "Auto: paused — press Play or choose a letter";
+      } else if (currentMode === "numbers") {
+        autoStatus.textContent = "Auto: paused — press Play or pick 1–20";
+      } else if (currentMode === "produce" || currentMode === "colors") {
+        autoStatus.textContent = "Auto: paused — press Play or pick a picture";
+      } else {
+        autoStatus.textContent = "Auto: paused — press Play or pick an animal";
+      }
+      cancelAllSpeech();
+    }
+
+    function manualStopAuto() {
+      if (autoRunning) {
+        stopAuto();
+        if (currentMode === "abc") {
+          const cur = elLetter.textContent;
+          const i = letters.indexOf(cur);
+          if (i >= 0) {
+            autoNextIndex = (i + 1) % 26;
+          }
+        } else if (currentMode === "numbers") {
+          autoNextIndex = (currentNumberIndex + 1) % 20;
+        } else if (currentMode === "produce") {
+          autoNextIndex = (currentProduceIndex + 1) % PRODUCE.length;
+        } else if (currentMode === "colors") {
+          autoNextIndex = (currentColorIndex + 1) % COLORS.length;
+        } else {
+          autoNextIndex = (currentAnimalIndex + 1) % ANIMALS.length;
+        }
+      }
+    }
+
+    btnAuto.addEventListener("click", () => {
+      if (autoRunning) {
+        stopAuto();
+      } else {
+        startAuto();
+      }
+    });
+
+    autoSpeed.addEventListener("change", () => {
+      if (autoRunning) {
+        startAuto({ timerOnly: true });
+      }
+    });
+
+    if (modeSelect) {
+      modeSelect.addEventListener("change", () => {
+        const wasRunning = autoRunning;
+        cancelAllSpeech();
+        if (wasRunning) {
+          clearAutoTimer();
+          autoRunning = false;
+        }
+        const next = normalizeMode(modeSelect.value);
+        currentMode = next;
+        modeSelect.value = next;
+        syncModeSelectFromInput();
+        try {
+          localStorage.setItem(STORAGE_MODE, next);
+        } catch (_) {}
+        updateSubline();
+        buildKeyRow();
+        if (currentMode === "abc") {
+          autoNextIndex = 1;
+          /* Call speak in the same turn as the user change event (Safari/WebKit needs a user gesture for TTS). */
+          showLetter("A", keyByLetter.get("A") || null, {
+            speak: soundOn,
+            manual: true,
+            applyFirst: true
+          });
+        } else if (currentMode === "numbers") {
+          autoNextIndex = 1;
+          showNumber(0, keys[0] || null, {
+            speak: soundOn,
+            manual: true,
+            applyFirst: true
+          });
+        } else if (currentMode === "produce") {
+          autoNextIndex = 1;
+          showProduce(0, keys[0] || null, { speak: soundOn, manual: true });
+        } else if (currentMode === "colors") {
+          autoNextIndex = 1;
+          showColor(0, keys[0] || null, { speak: soundOn, manual: true });
+        } else {
+          autoNextIndex = 1;
+          showAnimal(0, keys[0] || null, { speak: soundOn, manual: true });
+        }
+        if (wasRunning && !mqReduce.matches) {
+          startAuto({ skipImmediateStep: true });
+        } else {
+          setPlayButtonUI(false);
+          if (mqReduce.matches) {
+            if (currentMode === "abc") {
+              autoStatus.textContent =
+                "Auto: off (reduced motion) — use Play to start, or pick letters";
+            } else if (currentMode === "numbers") {
+              autoStatus.textContent =
+                "Auto: off (reduced motion) — use Play or pick numbers 1–20";
+            } else if (currentMode === "produce" || currentMode === "colors") {
+              autoStatus.textContent =
+                "Auto: off (reduced motion) — use Play, pick pictures, or ← →";
+            } else {
+              autoStatus.textContent =
+                "Auto: off (reduced motion) — use Play, pick animals, or ← →";
+            }
+          } else {
+            if (currentMode === "abc") {
+              autoStatus.textContent = "Auto: paused — press Play or choose a letter";
+            } else if (currentMode === "numbers") {
+              autoStatus.textContent = "Auto: paused — press Play or pick 1–20";
+            } else if (currentMode === "produce" || currentMode === "colors") {
+              autoStatus.textContent = "Auto: paused — press Play or pick a picture";
+            } else {
+              autoStatus.textContent = "Auto: paused — press Play or pick an animal";
+            }
+          }
+        }
+      });
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (currentMode === "animals") {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentAnimalIndex + 1) % ANIMALS.length;
+          showAnimal(n, keys[n], { manual: true, speak: true });
+          return;
+        }
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentAnimalIndex - 1 + ANIMALS.length) % ANIMALS.length;
+          showAnimal(n, keys[n], { manual: true, speak: true });
+          return;
+        }
+      }
+      if (currentMode === "produce") {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentProduceIndex + 1) % PRODUCE.length;
+          showProduce(n, keys[n], { manual: true, speak: true });
+          return;
+        }
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentProduceIndex - 1 + PRODUCE.length) % PRODUCE.length;
+          showProduce(n, keys[n], { manual: true, speak: true });
+          return;
+        }
+      }
+      if (currentMode === "colors") {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentColorIndex + 1) % COLORS.length;
+          showColor(n, keys[n], { manual: true, speak: true });
+          return;
+        }
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentColorIndex - 1 + COLORS.length) % COLORS.length;
+          showColor(n, keys[n], { manual: true, speak: true });
+          return;
+        }
+      }
+      if (currentMode === "numbers") {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentNumberIndex + 1) % 20;
+          showNumber(n, keys[n], { manual: true, numberOnly: true });
+          return;
+        }
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          manualStopAuto();
+          const n = (currentNumberIndex - 1 + 20) % 20;
+          showNumber(n, keys[n], { manual: true, numberOnly: true });
+          return;
+        }
+        const dk = e.key;
+        if (dk >= "1" && dk <= "9") {
+          e.preventDefault();
+          manualStopAuto();
+          const idx = parseInt(dk, 10) - 1;
+          showNumber(idx, keys[idx], { manual: true, numberOnly: true });
+          return;
+        }
+        if (dk === "0") {
+          e.preventDefault();
+          manualStopAuto();
+          showNumber(9, keys[9], { manual: true, numberOnly: true });
+          return;
+        }
+      }
+      if (e.key && e.key.length === 1) {
+        const u = e.key.toUpperCase();
+        if (currentMode === "abc" && u >= "A" && u <= "Z" && PAIRS[u]) {
+          e.preventDefault();
+          manualStopAuto();
+          showLetter(u, keyByLetter.get(u), { manual: true, letterOnly: true });
+        }
+      }
+    });
+
+    requestAnimationFrame(() => {
+      /* Stop auto timer / reset Play UI before first paint speak — stopAuto() cancels all
+       * speech, so it must run *before* show*…(speak), not after, or boot TTS is cut off. */
+      stopAuto();
+      const k0 = (keyByNumberIndex && keyByNumberIndex.get(0)) || keys[0] || null;
+      const speakBoot = soundOn;
+      if (currentMode === "abc") {
+        showLetter("A", keyByLetter.get("A"), { applyFirst: true, speak: speakBoot });
+      } else if (currentMode === "numbers") {
+        showNumber(0, k0, { applyFirst: true, speak: speakBoot });
+      } else if (currentMode === "produce") {
+        showProduce(0, k0, { speak: speakBoot });
+      } else if (currentMode === "colors") {
+        showColor(0, k0, { speak: speakBoot });
+      } else {
+        showAnimal(0, keys[0] || null, { speak: speakBoot });
+      }
+      try {
+        if (welcomeBanner && !localStorage.getItem(STORAGE_WELCOME)) {
+          welcomeBanner.hidden = false;
+        }
+      } catch (_) {
+        if (welcomeBanner) {
+          welcomeBanner.hidden = false;
+        }
+      }
+      stage.classList.add("pop");
+      if (currentMode === "abc") {
+        keyByLetter.get("A")?.setAttribute("aria-pressed", "true");
+        autoNextIndex = 0;
+        /* showLetter("A"…) already spawns floaters; avoid doubling */
+      } else if (currentMode === "numbers") {
+        keys[0]?.setAttribute("aria-pressed", "true");
+        autoNextIndex = 0;
+      } else if (currentMode === "produce") {
+        keys[0]?.setAttribute("aria-pressed", "true");
+        autoNextIndex = 0;
+        spawnFloatersForEmoji(PRODUCE[0].emoji, 2);
+      } else if (currentMode === "colors") {
+        keys[0]?.setAttribute("aria-pressed", "true");
+        autoNextIndex = 0;
+        spawnFloatersForEmoji(COLORS[0].emoji, 2);
+      } else {
+        keys[0]?.setAttribute("aria-pressed", "true");
+        autoNextIndex = 0;
+        spawnFloatersForEmoji(ANIMALS[0].emoji, 2);
+      }
+      if (mqReduce.matches) {
+        if (currentMode === "abc") {
+          autoStatus.textContent =
+            "Auto: off (reduced motion) — use Play to start, or pick letters";
+        } else if (currentMode === "numbers") {
+          autoStatus.textContent =
+            "Auto: off (reduced motion) — use Play or pick numbers 1–20";
+        } else if (currentMode === "produce" || currentMode === "colors") {
+          autoStatus.textContent =
+            "Auto: off (reduced motion) — use Play, pick pictures, or ← →";
+        } else {
+          autoStatus.textContent =
+            "Auto: off (reduced motion) — use Play, pick animals, or ← →";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
