@@ -1653,6 +1653,15 @@
        stale onend/onerror handlers can detect they no longer represent the
        active utterance and bail out (prevents "lion sound for horse" races). */
     let speechToken = 0;
+    /** After reload, TTS often uses a wrong default voice until `voiceschanged` loads; delay first speak. */
+    const BOOT_SPEAK_DELAY_MS = 1000;
+    let deferredBootSpeakTimer = null;
+    function clearDeferredBootSpeak() {
+      if (deferredBootSpeakTimer !== null) {
+        clearTimeout(deferredBootSpeakTimer);
+        deferredBootSpeakTimer = null;
+      }
+    }
 
     const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -2310,6 +2319,7 @@
       if (!("speechSynthesis" in window)) {
         return 0;
       }
+      clearDeferredBootSpeak();
       const tok = ++speechToken;
       try {
         if (speechSynthesis.speaking || speechSynthesis.pending) {
@@ -2331,6 +2341,7 @@
     }
 
     function cancelAllSpeech() {
+      clearDeferredBootSpeak();
       speechToken += 1;
       try {
         if ("speechSynthesis" in window) {
@@ -2526,6 +2537,7 @@
       if (!a || !soundOn) {
         return;
       }
+      clearDeferredBootSpeak();
       stopAnimalSfx();
       if (a.clip) {
         const vClip = { volume: clipVolumeForAnimal(a) };
@@ -3100,6 +3112,46 @@
       }
     });
 
+    function runDeferredBootSpeak() {
+      if (!soundOn) {
+        return;
+      }
+      prepareSpeechSynthesis();
+      try {
+        if ("speechSynthesis" in window) {
+          speechSynthesis.getVoices();
+        }
+      } catch (_) {}
+      if (currentMode === "abc") {
+        const L = elLetter && elLetter.textContent ? elLetter.textContent.trim().charAt(0) : "A";
+        const key = L >= "A" && L <= "Z" ? L : "A";
+        const list = getAbcList(key);
+        if (list && list[0]) {
+          speakAbcWord(list[0].word);
+        }
+      } else if (currentMode === "numbers") {
+        speakAbcWord(NUMBER_NAMES[currentNumberIndex] + "!");
+      } else if (currentMode === "produce") {
+        speakAbcWord(PRODUCE[currentProduceIndex].name);
+      } else if (currentMode === "colors") {
+        const c = COLORS[currentColorIndex];
+        speakAbcWord(c.name + "! " + c.object + ".");
+      } else {
+        speakAnimal(ANIMALS[currentAnimalIndex]);
+      }
+    }
+
+    function scheduleBootSpeakIfVoiceOn() {
+      clearDeferredBootSpeak();
+      if (!soundOn) {
+        return;
+      }
+      deferredBootSpeakTimer = window.setTimeout(function () {
+        deferredBootSpeakTimer = null;
+        runDeferredBootSpeak();
+      }, BOOT_SPEAK_DELAY_MS);
+    }
+
     requestAnimationFrame(() => {
       /* Stop auto timer / reset Play UI before first paint speak — stopAuto() cancels all
        * speech, so it must run *before* show*…(speak), not after, or boot TTS is cut off. */
@@ -3107,15 +3159,18 @@
       const k0 = (keyByNumberIndex && keyByNumberIndex.get(0)) || keys[0] || null;
       const speakBoot = soundOn;
       if (currentMode === "abc") {
-        showLetter("A", keyByLetter.get("A"), { applyFirst: true, speak: speakBoot });
+        showLetter("A", keyByLetter.get("A"), { applyFirst: true, speak: false });
       } else if (currentMode === "numbers") {
-        showNumber(0, k0, { applyFirst: true, speak: speakBoot });
+        showNumber(0, k0, { applyFirst: true, speak: false });
       } else if (currentMode === "produce") {
-        showProduce(0, k0, { speak: speakBoot });
+        showProduce(0, k0, { speak: false });
       } else if (currentMode === "colors") {
-        showColor(0, k0, { speak: speakBoot });
+        showColor(0, k0, { speak: false });
       } else {
-        showAnimal(0, keys[0] || null, { speak: speakBoot });
+        showAnimal(0, keys[0] || null, { speak: false });
+      }
+      if (speakBoot) {
+        scheduleBootSpeakIfVoiceOn();
       }
       try {
         if (welcomeBanner && !localStorage.getItem(STORAGE_WELCOME)) {
