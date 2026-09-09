@@ -3,6 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Opt out of Chrome for Android's "Auto Dark Theme", which darkens and desaturates
+       pages that do not declare a colour scheme. Safari has no equivalent, which is why
+       the palette only looked faded on Android. -->
+  <meta name="color-scheme" content="light only" />
+  <script>
+    /* Set before first paint so the Android-only styles never flash. */
+    if (/android/i.test(navigator.userAgent)) {
+      document.documentElement.classList.add("is-android");
+    }
+  </script>
   <title>Learn your ABCs</title>
   <link
     rel="icon"
@@ -24,6 +34,7 @@
       --card: #fff9f0;
       --accent: #ff6b6b;
       --text: #2d3436;
+      color-scheme: light only;
     }
     * { box-sizing: border-box; }
     html, body {
@@ -57,6 +68,13 @@
       position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.55; mix-blend-mode: soft-light;
       animation: blobOrbit 28s ease-in-out infinite;
     }
+    /* Blink on Android composites soft-light blending and wide blurs at lower precision,
+       which greys the blobs out and costs frames. Plain blending with a tighter blur keeps
+       the same look there without the wash. */
+    .is-android .blob {
+      filter: blur(34px); opacity: 0.42; mix-blend-mode: normal;
+    }
+    .is-android .bg-scene { filter: saturate(1.12); }
     .blob.b1 { width: 45vmin; height: 45vmin; left: -8%; top: 10%; background: #ff9ecd; animation-delay: 0s; }
     .blob.b2 { width: 38vmin; height: 38vmin; right: -5%; bottom: 15%; background: #7ee8c4; animation-delay: -9s; animation-duration: 24s; }
     .blob.b3 { width: 32vmin; height: 32vmin; left: 35%; bottom: -10%; background: #ffd08a; animation-delay: -5s; animation-duration: 32s; }
@@ -1665,13 +1683,34 @@
 
     const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+    const IS_ANDROID = /android/i.test(navigator.userAgent);
+    /** Chrome for Android sometimes drops an utterance queued right after cancel(). */
+    const ANDROID_SPEAK_RETRY_MS = 170;
+
     let femaleVoice = null;
+    /**
+     * `getVoices()` on Android is an IPC hop to the system TTS engine, so calling it on
+     * every utterance adds audible latency. Cache the list and drop the cache only when
+     * the engine reports a change.
+     */
+    let voicesCache = null;
+    function getVoicesCached() {
+      if (voicesCache && voicesCache.length) {
+        return voicesCache;
+      }
+      try {
+        voicesCache = speechSynthesis.getVoices() || [];
+      } catch (_) {
+        voicesCache = [];
+      }
+      return voicesCache;
+    }
     function pickEnglishFemaleVoice() {
       if (!("speechSynthesis" in window)) {
         return null;
       }
       try {
-        const list = speechSynthesis.getVoices();
+        const list = getVoicesCached();
         if (!list || !list.length) {
           return null;
         }
@@ -1840,6 +1879,13 @@
           if (/(indian|en-in).{0,12}(female|veena|sangeeta|neerja|priya|lekha|vani|woman)/i.test(t)) {
             n += 55;
           }
+          /* Android's Google TTS lists network-backed voices alongside downloaded ones;
+             a network voice means an HTTP round-trip per word. Outrank every sweetness
+             bonus so an on-device voice always wins there. Desktop/iOS voices are all
+             local, so this is a no-op off Android. */
+          if (IS_ANDROID && v.localService) {
+            n += 600;
+          }
           const lg = String(v.lang || "")
             .toLowerCase();
           if (lg === "en-in") {
@@ -1899,14 +1945,26 @@
         return null;
       }
       try {
-        const list = speechSynthesis.getVoices();
-        return list.find((v) => v && v.voiceURI === femaleVoice.voiceURI) || null;
+        const uri = femaleVoice.voiceURI;
+        let hit = getVoicesCached().find((v) => v && v.voiceURI === uri) || null;
+        if (!hit) {
+          /* Cache went stale — refresh once and re-pick rather than falling back to
+             the engine default, which is often a male voice. */
+          voicesCache = null;
+          syncFemaleVoice();
+          hit = femaleVoice || null;
+        }
+        return hit;
       } catch (_) {
         return null;
       }
     }
+    function onVoicesChanged() {
+      voicesCache = null;
+      syncFemaleVoice();
+    }
     if ("speechSynthesis" in window) {
-      speechSynthesis.addEventListener("voiceschanged", syncFemaleVoice);
+      speechSynthesis.addEventListener("voiceschanged", onVoicesChanged);
       syncFemaleVoice();
     }
 
@@ -1916,13 +1974,45 @@
         return;
       }
       try {
-        speechSynthesis.getVoices();
+        voicesCache = null;
+        getVoicesCached();
         if (typeof speechSynthesis.resume === "function" && speechSynthesis.paused) {
           speechSynthesis.resume();
         }
       } catch (_) {}
       syncFemaleVoice();
     }
+
+    /**
+     * Android's TTS engine cold-starts on its first utterance, which shows up as a long
+     * delay on the very first word. Push a silent utterance through early so the engine
+     * is already running by the time a child taps something.
+     */
+    let ttsWarmed = false;
+    function warmUpSpeechEngine() {
+      if (ttsWarmed || !IS_ANDROID || !("speechSynthesis" in window)) {
+        return;
+      }
+      ttsWarmed = true;
+      try {
+        const u = new SpeechSynthesisUtterance(" ");
+        u.volume = 0;
+        const v = resolveCurrentFemaleVoice();
+        if (v) {
+          u.voice = v;
+          u.lang = v.lang || "en-US";
+        }
+        speechSynthesis.speak(u);
+      } catch (_) {}
+    }
+    /* Covers the case where sound starts off: warm on the first interaction instead. */
+    ["pointerdown", "touchstart", "keydown"].forEach(function (evt) {
+      window.addEventListener(evt, warmUpSpeechEngine, {
+        once: true,
+        capture: true,
+        passive: true,
+      });
+    });
 
     let animalSfx = null;
     function stopAnimalSfx() {
@@ -2331,10 +2421,33 @@
         ) {
           speechSynthesis.resume();
         }
-        syncFemaleVoice();
+        if (!femaleVoice) {
+          syncFemaleVoice();
+        }
         const utt = buildUtterance(tok);
         if (utt) {
-          speechSynthesis.speak(utt);
+          if (IS_ANDROID) {
+            /* Chrome for Android can swallow an utterance queued in the same task as
+               cancel(). Re-queue once if it never started; `started` keeps the retry
+               from doubling up on a normal, slightly slow start. */
+            let started = false;
+            utt.addEventListener("start", function () {
+              started = true;
+            });
+            speechSynthesis.speak(utt);
+            window.setTimeout(function () {
+              if (started || tok !== speechToken) {
+                return;
+              }
+              try {
+                if (!speechSynthesis.speaking && !speechSynthesis.pending) {
+                  speechSynthesis.speak(utt);
+                }
+              } catch (_) {}
+            }, ANDROID_SPEAK_RETRY_MS);
+          } else {
+            speechSynthesis.speak(utt);
+          }
         }
       } catch (_) {}
       return tok;
@@ -3117,11 +3230,6 @@
         return;
       }
       prepareSpeechSynthesis();
-      try {
-        if ("speechSynthesis" in window) {
-          speechSynthesis.getVoices();
-        }
-      } catch (_) {}
       if (currentMode === "abc") {
         const L = elLetter && elLetter.textContent ? elLetter.textContent.trim().charAt(0) : "A";
         const key = L >= "A" && L <= "Z" ? L : "A";
@@ -3146,6 +3254,9 @@
       if (!soundOn) {
         return;
       }
+      /* Warm the engine now; the real boot utterance is a full second away, so the
+         cancel() it issues cannot collide with this one. */
+      warmUpSpeechEngine();
       deferredBootSpeakTimer = window.setTimeout(function () {
         deferredBootSpeakTimer = null;
         runDeferredBootSpeak();
